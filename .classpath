@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/EssentialsX-2.16.0.3/EssentialsX-2.16.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/mcMMO.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/1.13.x/nuvotifier-2.4.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/1.13.x/worldguard-legacy-7.0.0-beta-02.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/1.13.x/worldedit-bukkit-7.0.0-beta-04.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/GriefPrevention.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/Spigot/spigot-1.13.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
