@@ -8,7 +8,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 
 import jp.azisaba.main.survival.commands.AzisabaSurvivalCommand;
 import jp.azisaba.main.survival.commands.VoteCommand;
-import jp.azisaba.main.survival.listeners.BlockBreakListener;
+import jp.azisaba.main.survival.listeners.EarnMoneyListener;
 import jp.azisaba.main.survival.listeners.EnterGateListener;
 import jp.azisaba.main.survival.listeners.HomeCreateCancelListener;
 import jp.azisaba.main.survival.listeners.JoinWorldDetector;
@@ -44,7 +44,7 @@ public class AzisabaSurvival extends JavaPlugin {
 
 		Bukkit.getPluginManager().registerEvents(new WitherCancelListener(), this);
 		Bukkit.getPluginManager().registerEvents(new HomeCreateCancelListener(), this);
-		Bukkit.getPluginManager().registerEvents(new BlockBreakListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new EarnMoneyListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new VoteListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new MainLoopPreventListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new EnterGateListener(this), this);

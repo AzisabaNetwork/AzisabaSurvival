@@ -24,7 +24,7 @@ import jp.azisaba.main.survival.util.ScoreboardDisplayer;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-public class BlockBreakListener implements Listener {
+public class EarnMoneyListener implements Listener {
 
 	private AzisabaSurvival plugin;
 
@@ -33,7 +33,7 @@ public class BlockBreakListener implements Listener {
 	private List<Location> placeLocList = new ArrayList<>();
 	private HashMap<Player, List<Location>> breakLocMap = new HashMap<>();
 
-	public BlockBreakListener(AzisabaSurvival plugin) {
+	public EarnMoneyListener(AzisabaSurvival plugin) {
 		this.plugin = plugin;
 	}
 
