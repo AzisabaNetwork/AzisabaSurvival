@@ -23,7 +23,7 @@ public class AzisabaSurvival extends JavaPlugin {
 	private static AzisabaSurvivalConfig config;
 	private static Economy econ = null;
 
-	private static boolean enableEarnMoney = false;
+	private static boolean enableEarnMoney = true;
 
 	@Override
 	public void onEnable() {
@@ -34,11 +34,11 @@ public class AzisabaSurvival extends JavaPlugin {
 		if (!setupEconomy()) {
 
 			getLogger().severe("Vault が導入されていません。お金追加機能を無効化します。");
+			enableEarnMoney = false;
 			return;
 		} else {
 
 			getLogger().info("Vault と連携しました。お金追加機能を有効化しています...");
-			enableEarnMoney = true;
 			getLogger().info("完了！");
 		}
 
