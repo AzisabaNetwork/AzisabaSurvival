@@ -1,6 +1,6 @@
 name: AzisabaSurvival
 main: jp.azisaba.main.survival.AzisabaSurvival
-version: 1.2.10
+version: 1.3.0
 author: AzisabaDev
 description: "Plugin for survival server."
 api-version: 1.13
