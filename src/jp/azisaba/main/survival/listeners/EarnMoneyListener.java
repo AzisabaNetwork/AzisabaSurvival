@@ -61,7 +61,7 @@ public class EarnMoneyListener implements Listener {
 
 		double value = AzisabaSurvival.getSurvivalConfig().getValueFromMaterial(e.getBlock().getType());
 
-		if (value <= -1) {
+		if (value <= 0) {
 			return;
 		}
 
