@@ -87,6 +87,18 @@ public class ScoreboardDisplayer {
 		}
 	}
 
+	public void addError() {
+		lastUpdate = System.currentTimeMillis();
+
+		moneyList.add(0, -1d);
+		milliList.add(0, System.currentTimeMillis());
+
+		if (moneyList.size() >= 50) {
+			moneyList.remove(moneyList.size() - 1);
+			milliList.remove(milliList.size() - 1);
+		}
+	}
+
 	private void updateObjective(Objective obj) {
 
 		resetScores();
@@ -94,7 +106,12 @@ public class ScoreboardDisplayer {
 		int i = 0;
 		for (; i < moneyList.size() && i < 10; i++) {
 
-			String str = ChatColor.GREEN + "+" + moneyList.get(i) + "円";
+			double value = moneyList.get(i);
+			String str = ChatColor.GREEN + "+" + value + "円";
+
+			if (value <= -1d) {
+				str = ChatColor.RED + "Error";
+			}
 
 			int count = 0;
 			while (obj.getScore(str).isScoreSet()) {

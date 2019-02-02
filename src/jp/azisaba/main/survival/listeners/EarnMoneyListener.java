@@ -77,7 +77,7 @@ public class EarnMoneyListener implements Listener {
 			return;
 		}
 
-		addMoney(p, value);
+		boolean success = addMoney(p, value);
 
 		ScoreboardDisplayer disp;
 		if (boardMap.containsKey(p)) {
@@ -86,7 +86,11 @@ public class EarnMoneyListener implements Listener {
 			disp = new ScoreboardDisplayer(plugin, p);
 		}
 
-		disp.addMoney(value);
+		if (success) {
+			disp.addMoney(value);
+		} else {
+			disp.addError();
+		}
 		disp.update();
 
 		if (!boardMap.containsKey(p)) {
@@ -143,15 +147,16 @@ public class EarnMoneyListener implements Listener {
 		}
 	}
 
-	private void addMoney(Player p, double value) {
+	private boolean addMoney(Player p, double value) {
 		Economy econ = AzisabaSurvival.getEconomy();
 		EconomyResponse r = econ.depositPlayer(p, null, value);
 
 		if (!r.transactionSuccess()) {
 			plugin.getLogger().warning(p.getName() + "へのお金追加でエラー発生: " + r.errorMessage);
-			return;
+			return false;
 		}
 
+		return true;
 	}
 
 	private boolean isPlacedByPlayer(Block block) {
