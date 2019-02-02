@@ -73,18 +73,23 @@ public class EarnMoneyListener implements Listener {
 			return;
 		}
 
+		if (!p.hasPermission("azisabasurvival.earnmoney")) {
+			return;
+		}
+
 		addMoney(p, value);
 
+		ScoreboardDisplayer disp;
 		if (boardMap.containsKey(p)) {
-			ScoreboardDisplayer disp = boardMap.get(p);
+			disp = boardMap.get(p);
+		} else {
+			disp = new ScoreboardDisplayer(plugin, p);
+		}
 
-			disp.addMoney(value);
-			disp.update();
-		} else if (p.hasPermission("azisabasurvival.earnmoney")) {
-			ScoreboardDisplayer disp = new ScoreboardDisplayer(plugin, p);
-			disp.addMoney(value);
-			disp.update();
+		disp.addMoney(value);
+		disp.update();
 
+		if (!boardMap.containsKey(p)) {
 			boardMap.put(p, disp);
 		}
 	}
