@@ -132,7 +132,7 @@ public class ScoreboardDisplayer {
 		double perSecond = 0;
 
 		for (int i2 = 0; i2 < moneyList.size(); i2++) {
-			if (milliList.get(i2) + 1000 > System.currentTimeMillis()) {
+			if (milliList.get(i2) + 1000 > System.currentTimeMillis() && moneyList.get(i2) > 0) {
 				perSecond += moneyList.get(i2);
 			}
 		}
