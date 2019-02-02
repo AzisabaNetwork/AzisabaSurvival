@@ -32,14 +32,10 @@ public class AzisabaSurvival extends JavaPlugin {
 		AzisabaSurvival.config.loadConfig();
 
 		if (!setupEconomy()) {
-
-			getLogger().severe("Vault が導入されていません。お金追加機能を無効化します。");
+			getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
 			enableEarnMoney = false;
-			return;
 		} else {
-
-			getLogger().info("Vault と連携しました。お金追加機能を有効化しています...");
-			getLogger().info("完了！");
+			getLogger().info("Vault と連携しました。");
 		}
 
 		Bukkit.getPluginManager().registerEvents(new WitherCancelListener(), this);
@@ -95,15 +91,19 @@ public class AzisabaSurvival extends JavaPlugin {
 	}
 
 	public static boolean setupEconomy() {
-		if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
+		try {
+			if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
+				return false;
+			}
+			RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+			if (rsp == null) {
+				return false;
+			}
+			econ = rsp.getProvider();
+			return econ != null;
+		} catch (Exception e) {
 			return false;
 		}
-		RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-		if (rsp == null) {
-			return false;
-		}
-		econ = rsp.getProvider();
-		return econ != null;
 	}
 
 	public static Economy getEconomy() {
