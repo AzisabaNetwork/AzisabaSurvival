@@ -11,7 +11,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class VoteCommand implements CommandExecutor {
 
-	private final String VOTE_URL = "https://azisaba.net/jms/vote/";
+	private final String VOTE_URL = "https://minecraft.jp/servers/azisaba.net";
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

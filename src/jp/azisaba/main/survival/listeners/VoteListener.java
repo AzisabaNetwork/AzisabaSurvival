@@ -24,7 +24,7 @@ import net.md_5.bungee.api.ChatColor;
 public class VoteListener implements Listener {
 
 	private AzisabaSurvival plugin;
-	private final String VOTE_URL = "https://azisaba.net/jms/vote/";
+	private final String VOTE_URL = "https://minecraft.jp/servers/azisaba.net";
 
 	public VoteListener(AzisabaSurvival plugin) {
 		this.plugin = plugin;
