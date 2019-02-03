@@ -31,13 +31,6 @@ public class AzisabaSurvival extends JavaPlugin {
 		AzisabaSurvival.config = new AzisabaSurvivalConfig(this);
 		AzisabaSurvival.config.loadConfig();
 
-		if (!setupEconomy()) {
-			getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
-			enableEarnMoney = false;
-		} else {
-			getLogger().info("Vault と連携しました。");
-		}
-
 		Bukkit.getPluginManager().registerEvents(new WitherCancelListener(), this);
 		Bukkit.getPluginManager().registerEvents(new HomeCreateCancelListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EarnMoneyListener(this), this);
@@ -52,6 +45,13 @@ public class AzisabaSurvival extends JavaPlugin {
 		Bukkit.getPluginCommand("vote").setExecutor(new VoteCommand());
 		Bukkit.getPluginCommand("vote")
 				.setPermissionMessage(config.chatPrefix + ChatColor.RED + "コマンドを実行する権限がないようです... バグ報告に投げてください。");
+
+		if (!setupEconomy()) {
+			getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
+			enableEarnMoney = false;
+		} else {
+			getLogger().info("Vault と連携しました。");
+		}
 
 		Bukkit.getLogger().info(getName() + " enabled.");
 	}
@@ -107,10 +107,6 @@ public class AzisabaSurvival extends JavaPlugin {
 	}
 
 	public static Economy getEconomy() {
-		if (econ == null) {
-			return null;
-		}
-
 		return econ;
 	}
 

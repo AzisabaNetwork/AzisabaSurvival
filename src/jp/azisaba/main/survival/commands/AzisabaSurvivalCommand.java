@@ -30,6 +30,15 @@ public class AzisabaSurvivalCommand implements CommandExecutor {
 			return true;
 		}
 
+		if (args[0].equalsIgnoreCase("money")) {
+
+			boolean toggle = !AzisabaSurvival.isEnableEarnMoney();
+			AzisabaSurvival.setEnableEarnMoney(toggle);
+
+			sender.sendMessage(AzisabaSurvival.getSurvivalConfig().chatPrefix + ChatColor.YELLOW + "now: " + toggle);
+			return true;
+		}
+
 		sender.sendMessage(ChatColor.RED + "Usage: " + cmd.getUsage().replace("{LABEL}", label));
 		return true;
 	}
