@@ -41,7 +41,7 @@ public class VoteListener implements Listener {
 			addMoney(voter);
 		} catch (NullPointerException e) {
 
-			if (voter.equals("Votifier Test") || e.getMessage().equals("user nout found.")) {
+			if (voter.equals("Votifier Test") || e.getMessage().equals("user not found.")) {
 				return;
 			}
 
