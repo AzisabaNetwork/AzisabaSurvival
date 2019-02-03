@@ -98,7 +98,7 @@ public class EarnMoneyListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void addBreakBlock(BlockBreakEvent e) {
 
 		if (!AzisabaSurvival.isEnableEarnMoney()) {
