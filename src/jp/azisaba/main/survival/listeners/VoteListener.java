@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 
@@ -38,6 +39,14 @@ public class VoteListener implements Listener {
 
 		try {
 			addMoney(voter);
+		} catch (NullPointerException e) {
+
+			if (voter.equals("Votifier Test") || e.getMessage().equals("user nout found.")) {
+				return;
+			}
+
+			errorTracker(vote, e);
+			return;
 		} catch (Exception e) {
 
 			if (voter.equals("Votifier Test")) {
@@ -69,8 +78,13 @@ public class VoteListener implements Listener {
 		Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 
 		double value = AzisabaSurvival.getSurvivalConfig().voteMoney;
+		User user = ess.getUser(name);
 
-		ess.getUser(name).giveMoney(BigDecimal.valueOf(value));
+		if (user == null) {
+			throw new NullPointerException("user not found.");
+		}
+
+		user.giveMoney(BigDecimal.valueOf(value));
 	}
 
 	private void errorTracker(Vote data, Exception e) {
