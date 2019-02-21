@@ -15,6 +15,11 @@ import jp.azisaba.main.survival.listeners.JoinWorldDetector;
 import jp.azisaba.main.survival.listeners.MainLoopPreventListener;
 import jp.azisaba.main.survival.listeners.VoteListener;
 import jp.azisaba.main.survival.listeners.WitherCancelListener;
+import jp.azisaba.main.survival.listeners.fly.BuyFlyListener;
+import jp.azisaba.main.survival.listeners.fly.FlyBossBarTask;
+import jp.azisaba.main.survival.listeners.fly.FlySignCreateListener;
+import jp.azisaba.main.survival.listeners.fly.FlyUpdateListener;
+import jp.azisaba.main.survival.listeners.fly.MoneyFlyManager;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
@@ -39,12 +44,22 @@ public class AzisabaSurvival extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new EnterGateListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new JoinWorldDetector(this), this);
 
+		Bukkit.getPluginManager().registerEvents(new FlySignCreateListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new BuyFlyListener(), this);
+		Bukkit.getPluginManager().registerEvents(new FlyUpdateListener(), this);
+
 		Bukkit.getPluginCommand("azisabasurvival").setExecutor(new AzisabaSurvivalCommand(this));
 		Bukkit.getPluginCommand("azisabasurvival")
 				.setPermissionMessage(config.chatPrefix + ChatColor.RED + "あなたにはこのコマンドを実行する権限がありません！");
 		Bukkit.getPluginCommand("vote").setExecutor(new VoteCommand());
 		Bukkit.getPluginCommand("vote")
 				.setPermissionMessage(config.chatPrefix + ChatColor.RED + "コマンドを実行する権限がないようです... バグ報告に投げてください。");
+
+		FlyBossBarTask.init(this);
+		FlyBossBarTask.runTask();
+
+		MoneyFlyManager.init(this);
+		MoneyFlyManager.loadData();
 
 		if (!setupEconomy()) {
 			getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
@@ -58,6 +73,9 @@ public class AzisabaSurvival extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+
+		MoneyFlyManager.clearBossBars();
+		MoneyFlyManager.saveData();
 
 		if (Bukkit.getOnlinePlayers().size() > 0) {
 			for (Player p : Bukkit.getOnlinePlayers()) {

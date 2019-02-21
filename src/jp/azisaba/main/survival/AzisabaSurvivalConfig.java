@@ -44,6 +44,11 @@ public class AzisabaSurvivalConfig {
 	@ConfigOptions(path = "Vote.Money")
 	public double voteMoney = 1000d;
 
+	@ConfigOptions(path = "MoneyFly.AllowWorlds")
+	public List<String> moneyFlyAllowWorldNames = new ArrayList<>(
+			Arrays.asList("main", "main_nether", "main_end", "new_flat", "main_flat", "resource", "resource_nether",
+					"resource_the_end"));
+
 	private HashMap<String, Integer> homeLimit = new HashMap<>();
 
 	public AzisabaSurvivalConfig(AzisabaSurvival plugin) {
