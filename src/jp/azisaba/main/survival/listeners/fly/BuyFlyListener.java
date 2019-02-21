@@ -89,10 +89,14 @@ public class BuyFlyListener implements Listener {
 			return;
 		}
 
-		MoneyFlyManager.addOneHour(p);
+		MoneyFlyManager.addTenMinutes(p);
 
 		p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1, 1);
-		p.sendMessage(ChatColor.YELLOW + "1時間" + ChatColor.GREEN + "のFlyを購入しました！ (" + value + "円)");
+		p.sendMessage(ChatColor.YELLOW + "10分" + ChatColor.GREEN + "のFlyを購入しました！ (" + value + "円)");
+
+		Location loc = b.getLocation();
+		Bukkit.getLogger().info("[AS:MoneyFly] " + p.getName() + "がFlyを購入しました。 (" + loc.getBlockX() + ","
+				+ loc.getBlockY() + "," + loc.getBlockZ() + ")");
 
 		p.setAllowFlight(true);
 	}

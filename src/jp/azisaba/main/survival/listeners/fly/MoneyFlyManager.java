@@ -33,9 +33,8 @@ public class MoneyFlyManager {
 		}
 	}
 
-	protected static void addOneHour(Player p) {
-		//		addTime(p, 1000L * 60L * 60L);
-		addTime(p, 1000L * 60L * 60L);
+	protected static void addTenMinutes(Player p) {
+		addTime(p, 1000L * 60L * 10L);
 	}
 
 	public static boolean canMoneyFly(Player p) {
