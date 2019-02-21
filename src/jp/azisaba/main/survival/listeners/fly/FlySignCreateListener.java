@@ -40,11 +40,11 @@ public class FlySignCreateListener implements Listener {
 			return;
 		}
 
-		double value = 100 * 10000; // 100万
+		int value = 500; // チケット
 
 		if (!line2.equals("")) {
 			try {
-				value = Double.parseDouble(line2);
+				value = Integer.parseInt(line2);
 
 				if (value < 0) {
 					throw new NumberFormatException("minus value");
@@ -63,7 +63,7 @@ public class FlySignCreateListener implements Listener {
 		}
 
 		e.setLine(0, MoneyFlyManager.getFormattedSignLine1());
-		e.setLine(1, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "" + value + "円");
+		e.setLine(1, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "" + value + "チケット");
 		e.setLine(2, "");
 		e.setLine(3, ChatColor.RED + "" + ChatColor.BOLD + "右クリックで購入");
 

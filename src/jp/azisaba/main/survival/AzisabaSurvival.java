@@ -45,7 +45,7 @@ public class AzisabaSurvival extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new JoinWorldDetector(this), this);
 
 		Bukkit.getPluginManager().registerEvents(new FlySignCreateListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new BuyFlyListener(), this);
+		Bukkit.getPluginManager().registerEvents(new BuyFlyListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new FlyUpdateListener(), this);
 
 		Bukkit.getPluginCommand("azisabasurvival").setExecutor(new AzisabaSurvivalCommand(this));

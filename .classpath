@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/1.13.x/worldedit-bukkit-7.0.0-beta-04.jar"/>
 	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/GriefPrevention.jar"/>
 	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/Spigot/spigot-1.13.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/siloneco/MainFile/4 Programming/Eclipse-Cooperation-Files/HomoSystem.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
