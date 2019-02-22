@@ -1,7 +1,7 @@
 package jp.azisaba.main.survival.listeners;
 
 import java.io.File;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -11,15 +11,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 
+import jp.azisaba.main.homos.classes.PlayerData;
+import jp.azisaba.main.homos.database.PlayerDataManager;
+import jp.azisaba.main.homos.database.TicketManager;
 import jp.azisaba.main.survival.AzisabaSurvival;
 import jp.azisaba.main.survival.util.JSONMessage;
 import jp.azisaba.main.survival.util.LogWriter;
-import net.ess3.api.MaxMoneyException;
 import net.md_5.bungee.api.ChatColor;
 
 public class VoteListener implements Listener {
@@ -38,7 +38,7 @@ public class VoteListener implements Listener {
 		String voter = vote.getUsername();
 
 		try {
-			addMoney(voter);
+			addTickets(voter);
 		} catch (NullPointerException e) {
 
 			if (voter.equals("Votifier Test") || e.getMessage().equals("user not found.")) {
@@ -59,8 +59,8 @@ public class VoteListener implements Listener {
 
 		JSONMessage msg = JSONMessage
 				.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN
-						+ voter + ChatColor.GRAY + "さんがJMSで投票して" + AzisabaSurvival.getSurvivalConfig().voteMoney
-						+ "円をゲットしました！");
+						+ voter + ChatColor.GRAY + "さんがJMSで投票して" + AzisabaSurvival.getSurvivalConfig().voteTickets
+						+ "チケットをゲットしました！");
 
 		msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
 
@@ -73,18 +73,18 @@ public class VoteListener implements Listener {
 		plugin.getLogger().info(voter + " が投票しました。");
 	}
 
-	private void addMoney(String name) throws MaxMoneyException {
+	private boolean addTickets(String name) {
 
-		Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+		PlayerData data = PlayerDataManager.getPlayerData(name);
 
-		double value = AzisabaSurvival.getSurvivalConfig().voteMoney;
-		User user = ess.getUser(name);
-
-		if (user == null) {
+		if (data == null) {
 			throw new NullPointerException("user not found.");
 		}
 
-		user.giveMoney(BigDecimal.valueOf(value));
+		boolean success = TicketManager.addTicket(data.getUuid(),
+				BigInteger.valueOf(AzisabaSurvival.getSurvivalConfig().voteTickets));
+
+		return success;
 	}
 
 	private void errorTracker(Vote data, Exception e) {

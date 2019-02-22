@@ -41,8 +41,8 @@ public class AzisabaSurvivalConfig {
 			Arrays.asList("resource", "resource_nether", "resource_the_end"));
 	private HashMap<Material, Double> moneyMap = new HashMap<>();
 
-	@ConfigOptions(path = "Vote.Money")
-	public double voteMoney = 1000d;
+	@ConfigOptions(path = "Vote.Tickets")
+	public int voteTickets = 100;
 
 	@ConfigOptions(path = "MoneyFly.AllowWorlds")
 	public List<String> moneyFlyAllowWorldNames = new ArrayList<>(
