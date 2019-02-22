@@ -1,2 +1,10 @@
-# AzisabaSurvival
-アジ鯖生活用のPluginです。
+# AzisabaSurvival - 生活鯖用のPlugin
+
+* 投票報酬
+* ウィザースポーンの制限
+* ホームのワールド別 数制限
+* 整地報酬
+* ロビーゲートループを阻止
+* ランダムテレポートゲート
+* "World" に参加したときにメインへTP
+* (Money Fly)
