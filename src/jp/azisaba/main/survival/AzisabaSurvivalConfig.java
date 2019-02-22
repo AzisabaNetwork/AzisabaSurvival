@@ -42,7 +42,7 @@ public class AzisabaSurvivalConfig {
 	private HashMap<Material, Double> moneyMap = new HashMap<>();
 
 	@ConfigOptions(path = "Vote.Tickets")
-	public int voteTickets = 100;
+	public int voteTickets = 50;
 
 	@ConfigOptions(path = "MoneyFly.AllowWorlds")
 	public List<String> moneyFlyAllowWorldNames = new ArrayList<>(
