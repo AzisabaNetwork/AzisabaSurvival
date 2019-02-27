@@ -88,16 +88,14 @@ public class EnterGateListener implements Listener {
 
 		Location loc = null;
 
-		int count = 0;
+		long start = System.currentTimeMillis();
 		while (loc == null || isProtect(loc) || !isSafeLocation(loc)) {
 
-			if (count > 50) {
+			if (start + 50 < System.currentTimeMillis()) {
 				return null;
 			}
 
 			loc = getCorrectLocation(generateRandomLocation(world));
-
-			count++;
 		}
 
 		return loc;
