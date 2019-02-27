@@ -65,31 +65,23 @@ public class EnterGateListener implements Listener {
 
 		selectingPos.add(p);
 
-		new Thread(new Runnable() {
+		World world = p.getWorld();
+		Location randomLoc = getRandomLocation(world);
 
-			private World world = p.getWorld();
+		if (randomLoc == null) {
+			p.sendMessage(ChatColor.RED + "良い土地が見つかりませんでした。再度試してください。");
 
-			@Override
+			selectingPos.remove(p);
+			return;
+		}
+
+		new BukkitRunnable() {
 			public void run() {
+				p.teleport(randomLoc);
 
-				Location loc = getRandomLocation(world);
-
-				if (loc == null) {
-					p.sendMessage(ChatColor.RED + "良い土地が見つかりませんでした。再度試してください。");
-
-					selectingPos.remove(p);
-					return;
-				}
-
-				new BukkitRunnable() {
-					public void run() {
-						p.teleport(loc);
-
-						selectingPos.remove(p);
-					}
-				}.runTaskLater(plugin, 0);
+				selectingPos.remove(p);
 			}
-		}).start();
+		}.runTaskLater(plugin, 0);
 	}
 
 	private Location getRandomLocation(World world) {
@@ -99,7 +91,7 @@ public class EnterGateListener implements Listener {
 		int count = 0;
 		while (loc == null || isProtect(loc) || !isSafeLocation(loc)) {
 
-			if (count > 100000) {
+			if (count > 50) {
 				return null;
 			}
 
