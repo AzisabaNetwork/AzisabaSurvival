@@ -151,22 +151,40 @@ public class EnterGateListener implements Listener {
 
 		loc.setY(257);
 
-		while (loc.getBlock().getType() == Material.AIR || loc.getBlock().getType() == Material.VOID_AIR
-				|| !loc.getBlock().getType().isOccluding()) {
+		boolean beforeLiquid = false;
+		while (!isCorrect(loc)) {
 			loc.subtract(0, 1, 0);
+
+			if (beforeLiquid && isLiquid(loc)) {
+				return null;
+			}
+
+			if (isLiquid(loc)) {
+				beforeLiquid = true;
+			}
 
 			if (loc.getY() < 0) {
 				return null;
 			}
 		}
 
-		if (loc.getBlock().getType() == Material.LAVA || loc.getBlock().getType() == Material.WATER) {
-			return null;
-		}
-
 		loc.add(0.5, 1, 0.5);
 
 		return loc;
+	}
+
+	private final List<Material> filter = Arrays.asList(Material.AIR, Material.VOID_AIR, Material.WATER, Material.LAVA);
+
+	private boolean isCorrect(Location loc) {
+		if (filter.contains(loc.getBlock().getType())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean isLiquid(Location loc) {
+		return Arrays.asList(Material.WATER, Material.LAVA).contains(loc.getBlock().getType());
 	}
 
 	private boolean isSafeLocation(Location location) {
