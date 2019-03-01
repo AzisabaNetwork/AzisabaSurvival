@@ -20,6 +20,7 @@ import jp.azisaba.main.survival.listeners.fly.FlyBossBarTask;
 import jp.azisaba.main.survival.listeners.fly.FlySignCreateListener;
 import jp.azisaba.main.survival.listeners.fly.FlyUpdateListener;
 import jp.azisaba.main.survival.listeners.fly.MoneyFlyManager;
+import jp.azisaba.main.survival.listeners.fly.MoneyFlyParticleTask;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
@@ -46,7 +47,7 @@ public class AzisabaSurvival extends JavaPlugin {
 
 		Bukkit.getPluginManager().registerEvents(new FlySignCreateListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new BuyFlyListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new FlyUpdateListener(), this);
+		Bukkit.getPluginManager().registerEvents(new FlyUpdateListener(this), this);
 
 		Bukkit.getPluginCommand("azisabasurvival").setExecutor(new AzisabaSurvivalCommand(this));
 		Bukkit.getPluginCommand("azisabasurvival")
@@ -67,6 +68,8 @@ public class AzisabaSurvival extends JavaPlugin {
 		} else {
 			getLogger().info("Vault と連携しました。");
 		}
+
+		MoneyFlyParticleTask.runTask(this);
 
 		Bukkit.getLogger().info(getName() + " enabled.");
 	}
@@ -89,6 +92,8 @@ public class AzisabaSurvival extends JavaPlugin {
 				}
 			}
 		}
+
+		MoneyFlyParticleTask.stopTask();
 
 		Bukkit.getLogger().info(getName() + " disabled.");
 	}
