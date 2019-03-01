@@ -94,6 +94,7 @@ public class AzisabaSurvival extends JavaPlugin {
 		}
 
 		MoneyFlyParticleTask.stopTask();
+		MoneyFlyManager.writeStoppedData();
 
 		Bukkit.getLogger().info(getName() + " disabled.");
 	}

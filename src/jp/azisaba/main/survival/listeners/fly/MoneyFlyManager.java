@@ -125,6 +125,9 @@ public class MoneyFlyManager {
 			return;
 		}
 
+		long stopped = conf.getLong("StoppedAt", System.currentTimeMillis());
+		long add = System.currentTimeMillis() - stopped;
+
 		for (String key : sec.getKeys(false)) {
 			UUID uuid;
 
@@ -146,7 +149,7 @@ public class MoneyFlyManager {
 				continue;
 			}
 
-			expire.put(uuid, finish);
+			expire.put(uuid, finish + add);
 
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null) {
@@ -163,6 +166,23 @@ public class MoneyFlyManager {
 		for (UUID uuid : expire.keySet()) {
 			conf.set("Players." + uuid.toString(), expire.get(uuid));
 		}
+
+		try {
+			conf.save(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean writeStoppedData() {
+
+		File file = new File(plugin.getDataFolder(), "FlyData.yml");
+		YamlConfiguration conf = YamlConfiguration.loadConfiguration(file);
+
+		conf.set("StoppedAt", System.currentTimeMillis());
 
 		try {
 			conf.save(file);
