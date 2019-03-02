@@ -36,7 +36,7 @@ public class MoneyFlyParticleTask {
 						continue;
 
 					List<Player> nearPlayerList = new ArrayList<>();
-					for (Entity ent : p.getWorld().getNearbyEntities(p.getLocation(), 10, 10, 10)) {
+					for (Entity ent : p.getWorld().getNearbyEntities(p.getLocation(), 60, 60, 60)) {
 						if (ent instanceof Player && ((Player) ent) != p) {
 							nearPlayerList.add((Player) ent);
 						}

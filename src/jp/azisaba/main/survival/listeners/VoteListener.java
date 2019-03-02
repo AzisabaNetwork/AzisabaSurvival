@@ -41,6 +41,10 @@ public class VoteListener implements Listener {
 			addTickets(voter);
 		} catch (NullPointerException e) {
 
+			if (e == null || e.getMessage() == null) {
+				return;
+			}
+
 			if (voter.equals("Votifier Test") || e.getMessage().equals("user not found.")) {
 				return;
 			}
