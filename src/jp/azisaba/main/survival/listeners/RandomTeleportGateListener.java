@@ -26,14 +26,14 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.md_5.bungee.api.ChatColor;
 
-public class EnterGateListener implements Listener {
+public class RandomTeleportGateListener implements Listener {
 
 	private AzisabaSurvival plugin;
 
 	private final Location pos1;
 	private final Location pos2;
 
-	public EnterGateListener(AzisabaSurvival plugin) {
+	public RandomTeleportGateListener(AzisabaSurvival plugin) {
 
 		this.plugin = plugin;
 
