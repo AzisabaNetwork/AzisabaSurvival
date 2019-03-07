@@ -3,6 +3,7 @@ package jp.azisaba.main.survival.listeners;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +42,8 @@ public class EnterGateListener implements Listener {
 	}
 
 	private List<Player> selectingPos = new ArrayList<>();
+	private HashMap<Player, Long> cooldown = new HashMap<>();
+	private HashMap<Player, Long> lastWarn = new HashMap<>();
 
 	@EventHandler
 	public void onEnterGate(PlayerMoveEvent e) {
@@ -63,7 +66,27 @@ public class EnterGateListener implements Listener {
 			return;
 		}
 
+		if (cooldown.containsKey(p)) {
+			long last = cooldown.get(p);
+
+			if (last + 10000 > System.currentTimeMillis()) {
+
+				if (lastWarn.containsKey(p) && lastWarn.get(p) + 3000 > System.currentTimeMillis()) {
+					return;
+				}
+
+				double sec = ((double) ((last + 10000) - System.currentTimeMillis())) / 1000d;
+				String time = String.format("%.2f", sec) + "秒後";
+
+				p.sendMessage(ChatColor.RED + "クールダウン中です。あと" + ChatColor.YELLOW + time + ChatColor.RED + "に入ってください。");
+				lastWarn.put(p, System.currentTimeMillis());
+
+				return;
+			}
+		}
+
 		selectingPos.add(p);
+		cooldown.put(p, System.currentTimeMillis());
 
 		World world = p.getWorld();
 		Location randomLoc = getRandomLocation(world);
