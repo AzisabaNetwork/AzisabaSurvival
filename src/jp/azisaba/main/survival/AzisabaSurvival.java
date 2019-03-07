@@ -10,6 +10,7 @@ import jp.azisaba.main.survival.commands.AzisabaSurvivalCommand;
 import jp.azisaba.main.survival.commands.VoteCommand;
 import jp.azisaba.main.survival.listeners.EarnMoneyListener;
 import jp.azisaba.main.survival.listeners.EnterGateListener;
+import jp.azisaba.main.survival.listeners.FlyKickTeleportListener;
 import jp.azisaba.main.survival.listeners.HomeCreateCancelListener;
 import jp.azisaba.main.survival.listeners.JoinWorldDetector;
 import jp.azisaba.main.survival.listeners.MainLoopPreventListener;
@@ -44,6 +45,7 @@ public class AzisabaSurvival extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new MainLoopPreventListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new EnterGateListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new JoinWorldDetector(this), this);
+		Bukkit.getPluginManager().registerEvents(new FlyKickTeleportListener(this), this);
 
 		Bukkit.getPluginManager().registerEvents(new FlySignCreateListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new BuyFlyListener(this), this);
