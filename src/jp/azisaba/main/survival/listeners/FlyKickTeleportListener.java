@@ -39,7 +39,7 @@ public class FlyKickTeleportListener implements Listener {
 			return;
 		}
 
-		if (join.get(p) + 5000 > System.currentTimeMillis()) {
+		if (join.get(p) + (1000 * 20) > System.currentTimeMillis()) {
 			int count = 0;
 
 			if (counter.containsKey(p.getUniqueId())) {
