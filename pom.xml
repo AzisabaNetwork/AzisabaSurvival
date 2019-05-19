@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>${project.artifactId}</name>
-	<description>A core plugin in Azisaba LeonGunWar</description>
+	<description>Support survival life for Azisaba Main server</description>
 	<url>https://azisaba.net</url>
 	<organization>
 		<name>Azisaba Developer</name>
