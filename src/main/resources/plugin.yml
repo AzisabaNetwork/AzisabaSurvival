@@ -1,0 +1,26 @@
+name: AzisabaSurvival
+main: jp.azisaba.main.survival.AzisabaSurvival
+version: 1.3.11
+author: AzisabaDev
+description: "Plugin for survival server."
+api-version: 1.13
+softdepend: ["Vault", "Essentials", "mcMMO", "Votifier"]
+commands:
+  azisabasurvival:
+    usage: "/{LABEL} reload"
+    permission: azisabasurvival.command.azisabasurvival
+    aliases: ["as"]
+  vote:
+    usage: "/vote"
+    permission: azisabasurvival.command.vote
+permissions:
+  azisabasurvival.command.azisabasurvival:
+    default: op
+  azisabasurvival.earnmoney:
+    default: true
+  azisabasurvival.command.vote:
+    default: true
+  azisabasurvival.moneyfly.create:
+    default: op
+  azisabasurvival.moneyfly.buy:
+    default: true
