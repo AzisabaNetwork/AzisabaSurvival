@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.azisaba</groupId>
 	<artifactId>AzisabaSurvival</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>${project.artifactId}</name>
 	<description>Support survival life for Azisaba Main server</description>
