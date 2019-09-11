@@ -76,6 +76,10 @@
       <id>sk89q-repo</id>
       <url>https://maven.sk89q.com/repo/</url>
     </repository>
+    <repository>
+      <id>bintray-repo</id>
+      <url>https://dl.bintray.com/nuvotifier/maven/</url>
+    </repository>
   </repositories>
 
   <dependencies>
