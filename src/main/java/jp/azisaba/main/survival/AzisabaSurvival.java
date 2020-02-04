@@ -6,6 +6,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 
+import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
+
 import jp.azisaba.main.survival.commands.AzisabaSurvivalCommand;
 import jp.azisaba.main.survival.commands.VoteCommand;
 import jp.azisaba.main.survival.listeners.EarnMoneyListener;
@@ -22,125 +25,123 @@ import jp.azisaba.main.survival.listeners.fly.FlySignCreateListener;
 import jp.azisaba.main.survival.listeners.fly.FlyUpdateListener;
 import jp.azisaba.main.survival.listeners.fly.MoneyFlyManager;
 import jp.azisaba.main.survival.listeners.fly.MoneyFlyParticleTask;
-import net.md_5.bungee.api.ChatColor;
-import net.milkbowl.vault.economy.Economy;
 
 public class AzisabaSurvival extends JavaPlugin {
 
-	private static AzisabaSurvivalConfig config;
-	private static Economy econ = null;
+    private static AzisabaSurvivalConfig config;
+    private static Economy econ = null;
 
-	private static boolean enableEarnMoney = true;
+    private static boolean enableEarnMoney = true;
 
-	@Override
-	public void onEnable() {
+    @Override
+    public void onEnable() {
 
-		AzisabaSurvival.config = new AzisabaSurvivalConfig(this);
-		AzisabaSurvival.config.loadConfig();
+        AzisabaSurvival.config = new AzisabaSurvivalConfig(this);
+        AzisabaSurvival.config.loadConfig();
 
-		Bukkit.getPluginManager().registerEvents(new WitherCancelListener(), this);
-		Bukkit.getPluginManager().registerEvents(new HomeCreateCancelListener(), this);
-		Bukkit.getPluginManager().registerEvents(new EarnMoneyListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new VoteListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new MainLoopPreventListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new RandomTeleportGateListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new JoinWorldDetector(this), this);
-		Bukkit.getPluginManager().registerEvents(new FlyKickTeleportListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new WitherCancelListener(), this);
+        Bukkit.getPluginManager().registerEvents(new HomeCreateCancelListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EarnMoneyListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new VoteListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new MainLoopPreventListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new RandomTeleportGateListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new JoinWorldDetector(this), this);
+        Bukkit.getPluginManager().registerEvents(new FlyKickTeleportListener(this), this);
 
-		Bukkit.getPluginManager().registerEvents(new FlySignCreateListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new BuyFlyListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new FlyUpdateListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new FlySignCreateListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new BuyFlyListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new FlyUpdateListener(this), this);
 
-		Bukkit.getPluginCommand("azisabasurvival").setExecutor(new AzisabaSurvivalCommand(this));
-		Bukkit.getPluginCommand("azisabasurvival")
-				.setPermissionMessage(config.chatPrefix + ChatColor.RED + "あなたにはこのコマンドを実行する権限がありません！");
-		Bukkit.getPluginCommand("vote").setExecutor(new VoteCommand());
-		Bukkit.getPluginCommand("vote")
-				.setPermissionMessage(config.chatPrefix + ChatColor.RED + "コマンドを実行する権限がないようです... バグ報告に投げてください。");
+        Bukkit.getPluginCommand("azisabasurvival").setExecutor(new AzisabaSurvivalCommand(this));
+        Bukkit.getPluginCommand("azisabasurvival")
+                .setPermissionMessage(config.chatPrefix + ChatColor.RED + "あなたにはこのコマンドを実行する権限がありません！");
+        Bukkit.getPluginCommand("vote").setExecutor(new VoteCommand());
+        Bukkit.getPluginCommand("vote")
+                .setPermissionMessage(config.chatPrefix + ChatColor.RED + "コマンドを実行する権限がないようです... バグ報告に投げてください。");
 
-		FlyBossBarTask.init(this);
-		FlyBossBarTask.runTask();
+        FlyBossBarTask.init(this);
+        FlyBossBarTask.runTask();
 
-		MoneyFlyManager.init(this);
-		MoneyFlyManager.loadData();
+        MoneyFlyManager.init(this);
+        MoneyFlyManager.loadData();
 
-		if (!setupEconomy()) {
-			getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
-			enableEarnMoney = false;
-		} else {
-			getLogger().info("Vault と連携しました。");
-		}
+        if ( !setupEconomy() ) {
+            getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
+            enableEarnMoney = false;
+        } else {
+            getLogger().info("Vault と連携しました。");
+        }
 
-		MoneyFlyParticleTask.runTask(this);
+        MoneyFlyParticleTask.runTask(this);
 
-		Bukkit.getLogger().info(getName() + " enabled.");
-	}
+        Bukkit.getLogger().info(getName() + " enabled.");
+    }
 
-	@Override
-	public void onDisable() {
+    @Override
+    public void onDisable() {
 
-		MoneyFlyManager.clearBossBars();
-		MoneyFlyManager.saveData();
+        MoneyFlyManager.clearBossBars();
+        MoneyFlyManager.saveData();
 
-		if (Bukkit.getOnlinePlayers().size() > 0) {
-			for (Player p : Bukkit.getOnlinePlayers()) {
+        if ( Bukkit.getOnlinePlayers().size() > 0 ) {
+            for ( Player p : Bukkit.getOnlinePlayers() ) {
 
-				if (p.getScoreboard() == null) {
-					continue;
-				}
+                if ( p.getScoreboard() == null ) {
+                    continue;
+                }
 
-				if (p.getScoreboard().getObjective("seichi") != null) {
-					p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
-				}
-			}
-		}
+                if ( p.getScoreboard().getObjective("seichi") != null ) {
+                    p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+                }
+            }
+        }
 
-		MoneyFlyParticleTask.stopTask();
-		MoneyFlyManager.writeStoppedData();
+        MoneyFlyParticleTask.stopTask();
+        MoneyFlyManager.writeStoppedData();
 
-		Bukkit.getLogger().info(getName() + " disabled.");
-	}
+        Bukkit.getLogger().info(getName() + " disabled.");
+    }
 
-	public void reloadSurvivalConfig() {
+    public void reloadSurvivalConfig() {
 
-		this.reloadConfig();
+        reloadConfig();
 
-		AzisabaSurvival.config = new AzisabaSurvivalConfig(this);
-		AzisabaSurvival.config.loadConfig();
+        AzisabaSurvival.config = new AzisabaSurvivalConfig(this);
+        AzisabaSurvival.config.loadConfig();
 
-		Bukkit.getPluginCommand("azisabasurvival")
-				.setPermissionMessage(config.chatPrefix + ChatColor.RED + "あなたにはこのコマンドを実行する権限がありません！");
-	}
+        Bukkit.getPluginCommand("azisabasurvival")
+                .setPermissionMessage(config.chatPrefix + ChatColor.RED + "あなたにはこのコマンドを実行する権限がありません！");
+    }
 
-	public static AzisabaSurvivalConfig getSurvivalConfig() {
-		return config;
-	}
+    public static AzisabaSurvivalConfig getSurvivalConfig() {
+        return config;
+    }
 
-	public static boolean setupEconomy() {
-		try {
-			if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
-				return false;
-			}
-			RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-			if (rsp == null) {
-				return false;
-			}
-			econ = rsp.getProvider();
-			return econ != null;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    public static boolean setupEconomy() {
+        try {
+            if ( Bukkit.getPluginManager().getPlugin("Vault") == null ) {
+                return false;
+            }
+            RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+            if ( rsp == null ) {
+                return false;
+            }
+            econ = rsp.getProvider();
+            return econ != null;
+        } catch ( Exception e ) {
+            return false;
+        }
+    }
 
-	public static Economy getEconomy() {
-		return econ;
-	}
+    public static Economy getEconomy() {
+        return econ;
+    }
 
-	public static boolean isEnableEarnMoney() {
-		return enableEarnMoney;
-	}
+    public static boolean isEnableEarnMoney() {
+        return enableEarnMoney;
+    }
 
-	public static void setEnableEarnMoney(boolean enable) {
-		enableEarnMoney = enable;
-	}
+    public static void setEnableEarnMoney(boolean enable) {
+        enableEarnMoney = enable;
+    }
 }

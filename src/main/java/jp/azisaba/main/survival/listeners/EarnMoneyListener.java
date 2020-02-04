@@ -19,155 +19,156 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.gmail.nossr50.mcMMO;
 
-import jp.azisaba.main.survival.AzisabaSurvival;
-import jp.azisaba.main.survival.util.ScoreboardDisplayer;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import jp.azisaba.main.survival.AzisabaSurvival;
+import jp.azisaba.main.survival.util.ScoreboardDisplayer;
+
 public class EarnMoneyListener implements Listener {
 
-	private AzisabaSurvival plugin;
+    private final AzisabaSurvival plugin;
 
-	private HashMap<Player, ScoreboardDisplayer> boardMap = new HashMap<Player, ScoreboardDisplayer>();
+    private final HashMap<Player, ScoreboardDisplayer> boardMap = new HashMap<>();
 
-	private List<Location> placeLocList = new ArrayList<>();
-	private HashMap<Player, List<Location>> breakLocMap = new HashMap<>();
+    private final List<Location> placeLocList = new ArrayList<>();
+    private final HashMap<Player, List<Location>> breakLocMap = new HashMap<>();
 
-	public EarnMoneyListener(AzisabaSurvival plugin) {
-		this.plugin = plugin;
-	}
+    public EarnMoneyListener(AzisabaSurvival plugin) {
+        this.plugin = plugin;
+    }
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockBreak(BlockBreakEvent e) {
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockBreak(BlockBreakEvent e) {
 
-		if (!AzisabaSurvival.isEnableEarnMoney()) {
-			return;
-		}
+        if ( !AzisabaSurvival.isEnableEarnMoney() ) {
+            return;
+        }
 
-		if (e.isCancelled()) {
-			return;
-		}
+        if ( e.isCancelled() ) {
+            return;
+        }
 
-		Player p = e.getPlayer();
-		World world = e.getBlock().getWorld();
+        Player p = e.getPlayer();
+        World world = e.getBlock().getWorld();
 
-		if (p.getGameMode() == GameMode.CREATIVE) {
-			return;
-		}
+        if ( p.getGameMode() == GameMode.CREATIVE ) {
+            return;
+        }
 
-		if (!AzisabaSurvival.getSurvivalConfig().enabledWorlds.contains(world.getName())) {
-			return;
-		}
+        if ( !AzisabaSurvival.getSurvivalConfig().enabledWorlds.contains(world.getName()) ) {
+            return;
+        }
 
-		double value = AzisabaSurvival.getSurvivalConfig().getValueFromMaterial(e.getBlock().getType());
+        double value = AzisabaSurvival.getSurvivalConfig().getValueFromMaterial(e.getBlock().getType());
 
-		if (value <= 0) {
-			return;
-		}
+        if ( value <= 0 ) {
+            return;
+        }
 
-		if (isPlacedByPlayer(e.getBlock())) {
-			return;
-		}
+        if ( isPlacedByPlayer(e.getBlock()) ) {
+            return;
+        }
 
-		if (breakLocMap.containsKey(p) && breakLocMap.get(p).contains(e.getBlock().getLocation())) {
-			return;
-		}
+        if ( breakLocMap.containsKey(p) && breakLocMap.get(p).contains(e.getBlock().getLocation()) ) {
+            return;
+        }
 
-		if (!p.hasPermission("azisabasurvival.earnmoney")) {
-			return;
-		}
+        if ( !p.hasPermission("azisabasurvival.earnmoney") ) {
+            return;
+        }
 
-		boolean success = addMoney(p, value);
+        boolean success = addMoney(p, value);
 
-		ScoreboardDisplayer disp;
-		if (boardMap.containsKey(p)) {
-			disp = boardMap.get(p);
-		} else {
-			disp = new ScoreboardDisplayer(plugin, p);
-		}
+        ScoreboardDisplayer disp;
+        if ( boardMap.containsKey(p) ) {
+            disp = boardMap.get(p);
+        } else {
+            disp = new ScoreboardDisplayer(plugin, p);
+        }
 
-		if (success) {
-			disp.addMoney(value);
-		} else {
-			disp.addError();
-		}
-		disp.update();
+        if ( success ) {
+            disp.addMoney(value);
+        } else {
+            disp.addError();
+        }
+        disp.update();
 
-		if (!boardMap.containsKey(p)) {
-			boardMap.put(p, disp);
-		}
-	}
+        if ( !boardMap.containsKey(p) ) {
+            boardMap.put(p, disp);
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void addBreakBlock(BlockBreakEvent e) {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void addBreakBlock(BlockBreakEvent e) {
 
-		if (!AzisabaSurvival.isEnableEarnMoney()) {
-			return;
-		}
+        if ( !AzisabaSurvival.isEnableEarnMoney() ) {
+            return;
+        }
 
-		if (e.isCancelled()) {
-			return;
-		}
+        if ( e.isCancelled() ) {
+            return;
+        }
 
-		Player p = e.getPlayer();
+        Player p = e.getPlayer();
 
-		if (breakLocMap.containsKey(p)) {
-			List<Location> locList = breakLocMap.get(p);
-			locList.add(0, e.getBlock().getLocation());
+        if ( breakLocMap.containsKey(p) ) {
+            List<Location> locList = breakLocMap.get(p);
+            locList.add(0, e.getBlock().getLocation());
 
-			if (locList.size() >= 50) {
-				locList.remove(locList.size() - 1);
-			}
+            if ( locList.size() >= 50 ) {
+                locList.remove(locList.size() - 1);
+            }
 
-			breakLocMap.put(p, locList);
-		} else {
-			breakLocMap.put(p, new ArrayList<Location>(Arrays.asList(e.getBlock().getLocation())));
-		}
-	}
+            breakLocMap.put(p, locList);
+        } else {
+            breakLocMap.put(p, new ArrayList<>(Arrays.asList(e.getBlock().getLocation())));
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void addPlaceBlock(BlockPlaceEvent e) {
+    @EventHandler(priority = EventPriority.HIGH)
+    public void addPlaceBlock(BlockPlaceEvent e) {
 
-		if (!AzisabaSurvival.isEnableEarnMoney()) {
-			return;
-		}
+        if ( !AzisabaSurvival.isEnableEarnMoney() ) {
+            return;
+        }
 
-		if (e.isCancelled()) {
-			return;
-		}
+        if ( e.isCancelled() ) {
+            return;
+        }
 
-		if (mcMMOEnabled()) {
-			return;
-		}
+        if ( mcMMOEnabled() ) {
+            return;
+        }
 
-		placeLocList.add(0, e.getBlock().getLocation());
+        placeLocList.add(0, e.getBlock().getLocation());
 
-		if (placeLocList.size() >= 200) {
-			placeLocList.remove(placeLocList.size() - 1);
-		}
-	}
+        if ( placeLocList.size() >= 200 ) {
+            placeLocList.remove(placeLocList.size() - 1);
+        }
+    }
 
-	private boolean addMoney(Player p, double value) {
-		Economy econ = AzisabaSurvival.getEconomy();
-		EconomyResponse r = econ.depositPlayer(p, null, value);
+    private boolean addMoney(Player p, double value) {
+        Economy econ = AzisabaSurvival.getEconomy();
+        EconomyResponse r = econ.depositPlayer(p, null, value);
 
-		if (!r.transactionSuccess()) {
-			plugin.getLogger().warning(p.getName() + "へのお金追加でエラー発生: " + r.errorMessage);
-			return false;
-		}
+        if ( !r.transactionSuccess() ) {
+            plugin.getLogger().warning(p.getName() + "へのお金追加でエラー発生: " + r.errorMessage);
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private boolean isPlacedByPlayer(Block block) {
-		if (mcMMOEnabled()) {
-			return mcMMO.getPlaceStore().isTrue(block.getState());
-		} else {
-			return placeLocList.contains(block.getLocation());
-		}
-	}
+    private boolean isPlacedByPlayer(Block block) {
+        if ( mcMMOEnabled() ) {
+            return mcMMO.getPlaceStore().isTrue(block.getState());
+        } else {
+            return placeLocList.contains(block.getLocation());
+        }
+    }
 
-	private boolean mcMMOEnabled() {
-		return Bukkit.getPluginManager().getPlugin("mcMMO") != null;
-	}
+    private boolean mcMMOEnabled() {
+        return Bukkit.getPluginManager().getPlugin("mcMMO") != null;
+    }
 }

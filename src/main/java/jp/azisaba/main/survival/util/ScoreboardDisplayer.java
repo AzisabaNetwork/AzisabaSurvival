@@ -11,179 +11,181 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import jp.azisaba.main.survival.AzisabaSurvival;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
+import jp.azisaba.main.survival.AzisabaSurvival;
+
 public class ScoreboardDisplayer {
 
-	private AzisabaSurvival plugin;
+    private final AzisabaSurvival plugin;
 
-	private Player player;
+    private final Player player;
 
-	private Scoreboard board;
-	private Objective obj = null;
-	private Objective obj2 = null;
+    private final Scoreboard board;
+    private Objective obj = null;
+    private Objective obj2 = null;
 
-	private int current = 1;
+    private int current = 1;
 
-	private List<Double> moneyList = new ArrayList<>();
-	private List<Long> milliList = new ArrayList<>();
+    private final List<Double> moneyList = new ArrayList<>();
+    private final List<Long> milliList = new ArrayList<>();
 
-	private long lastUpdate = -1;
+    private long lastUpdate = -1;
 
-	public ScoreboardDisplayer(AzisabaSurvival plugin, Player player) {
-		this.plugin = plugin;
-		this.player = player;
+    public ScoreboardDisplayer(AzisabaSurvival plugin, Player player) {
+        this.plugin = plugin;
+        this.player = player;
 
-		this.board = Bukkit.getScoreboardManager().getNewScoreboard();
-		this.obj = board.registerNewObjective("seichi", "dummy", ChatColor.YELLOW + "掘削ボード");
-		this.obj2 = board.registerNewObjective("seichi2", "dummy", ChatColor.YELLOW + "掘削ボード");
-		this.obj.setDisplayName(ChatColor.YELLOW + "掘削ボード");
-		this.obj2.setDisplayName(ChatColor.YELLOW + "掘削ボード");
+        board = Bukkit.getScoreboardManager().getNewScoreboard();
+        obj = board.registerNewObjective("seichi", "dummy", ChatColor.YELLOW + "掘削ボード");
+        obj2 = board.registerNewObjective("seichi2", "dummy", ChatColor.YELLOW + "掘削ボード");
+        obj.setDisplayName(ChatColor.YELLOW + "掘削ボード");
+        obj2.setDisplayName(ChatColor.YELLOW + "掘削ボード");
 
-		updateTask();
-	}
+        updateTask();
+    }
 
-	public void update() {
+    public void update() {
 
-		if (player == null) {
-			return;
-		}
+        if ( player == null ) {
+            return;
+        }
 
-		Objective updateObj = obj;
-		if (current == 0) {
-			updateObj = obj2;
-		}
+        Objective updateObj = obj;
+        if ( current == 0 ) {
+            updateObj = obj2;
+        }
 
-		if (current == 0) {
-			current = 1;
-		} else {
-			current = 0;
-		}
+        if ( current == 0 ) {
+            current = 1;
+        } else {
+            current = 0;
+        }
 
-		if (player.getScoreboard() != board) {
-			for (Objective obj : player.getScoreboard().getObjectives()) {
-				if (obj.getDisplaySlot() == DisplaySlot.SIDEBAR) {
-					return;
-				}
-			}
-		}
+        if ( player.getScoreboard() != board ) {
+            for ( Objective obj : player.getScoreboard().getObjectives() ) {
+                if ( obj.getDisplaySlot() == DisplaySlot.SIDEBAR ) {
+                    return;
+                }
+            }
+        }
 
-		updateObjective(updateObj);
-		player.setScoreboard(board);
-	}
+        updateObjective(updateObj);
+        player.setScoreboard(board);
+    }
 
-	public void addMoney(double value) {
+    public void addMoney(double value) {
 
-		lastUpdate = System.currentTimeMillis();
+        lastUpdate = System.currentTimeMillis();
 
-		moneyList.add(0, value);
-		milliList.add(0, System.currentTimeMillis());
+        moneyList.add(0, value);
+        milliList.add(0, System.currentTimeMillis());
 
-		if (moneyList.size() >= 50) {
-			moneyList.remove(moneyList.size() - 1);
-			milliList.remove(milliList.size() - 1);
-		}
-	}
+        if ( moneyList.size() >= 50 ) {
+            moneyList.remove(moneyList.size() - 1);
+            milliList.remove(milliList.size() - 1);
+        }
+    }
 
-	public void addError() {
-		lastUpdate = System.currentTimeMillis();
+    public void addError() {
+        lastUpdate = System.currentTimeMillis();
 
-		moneyList.add(0, -1d);
-		milliList.add(0, System.currentTimeMillis());
+        moneyList.add(0, -1d);
+        milliList.add(0, System.currentTimeMillis());
 
-		if (moneyList.size() >= 50) {
-			moneyList.remove(moneyList.size() - 1);
-			milliList.remove(milliList.size() - 1);
-		}
-	}
+        if ( moneyList.size() >= 50 ) {
+            moneyList.remove(moneyList.size() - 1);
+            milliList.remove(milliList.size() - 1);
+        }
+    }
 
-	private void updateObjective(Objective obj) {
+    private void updateObjective(Objective obj) {
 
-		resetScores();
+        resetScores();
 
-		int i = 0;
-		for (; i < moneyList.size() && i < 10; i++) {
+        int i = 0;
+        for ( ; i < moneyList.size() && i < 10; i++ ) {
 
-			double value = moneyList.get(i);
-			String str = ChatColor.GREEN + "+" + value + "円";
+            double value = moneyList.get(i);
+            String str = ChatColor.GREEN + "+" + value + "円";
 
-			if (value <= -1d) {
-				str = ChatColor.RED + "Error";
-			}
+            if ( value <= -1d ) {
+                str = ChatColor.RED + "Error";
+            }
 
-			int count = 0;
-			while (obj.getScore(str).isScoreSet()) {
+            int count = 0;
+            while ( obj.getScore(str).isScoreSet() ) {
 
-				if (count > 100) {
-					plugin.getLogger().info("break.");
-					break;
-				}
+                if ( count > 100 ) {
+                    plugin.getLogger().info("break.");
+                    break;
+                }
 
-				str = str + " ";
+                str = str + " ";
 
-				count++;
-			}
+                count++;
+            }
 
-			obj.getScore(str).setScore(i);
-		}
+            obj.getScore(str).setScore(i);
+        }
 
-		double perSecond = 0;
+        double perSecond = 0;
 
-		for (int i2 = 0; i2 < moneyList.size(); i2++) {
-			if (milliList.get(i2) + 1000 > System.currentTimeMillis() && moneyList.get(i2) > 0) {
-				perSecond += moneyList.get(i2);
-			}
-		}
+        for ( int i2 = 0; i2 < moneyList.size(); i2++ ) {
+            if ( milliList.get(i2) + 1000 > System.currentTimeMillis() && moneyList.get(i2) > 0 ) {
+                perSecond += moneyList.get(i2);
+            }
+        }
 
-		obj.getScore("毎秒: " + perSecond + "円").setScore(i);
+        obj.getScore("毎秒: " + perSecond + "円").setScore(i);
 
-		Economy econ = AzisabaSurvival.getEconomy();
+        Economy econ = AzisabaSurvival.getEconomy();
 
-		if (econ == null) {
-			return;
-		}
-		double balance = econ.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
+        if ( econ == null ) {
+            return;
+        }
+        double balance = econ.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
 
-		obj.getScore(ChatColor.RED + "所持金: " + ((int) balance) + "円").setScore(i + 1);
+        obj.getScore(ChatColor.RED + "所持金: " + (int) balance + "円").setScore(i + 1);
 
-		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-	}
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+    }
 
-	private void resetScores() {
-		for (String ent : board.getEntries()) {
-			board.resetScores(ent);
-		}
-	}
+    private void resetScores() {
+        for ( String ent : board.getEntries() ) {
+            board.resetScores(ent);
+        }
+    }
 
-	BukkitTask task = null;
+    BukkitTask task = null;
 
-	private void updateTask() {
-		task = new BukkitRunnable() {
-			public void run() {
+    private void updateTask() {
+        task = new BukkitRunnable() {
+            @Override
+            public void run() {
 
-				if (lastUpdate + 5000 < System.currentTimeMillis()) {
+                if ( lastUpdate + 5000 < System.currentTimeMillis() ) {
 
-					if (player.getScoreboard() == board) {
-						player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
-					}
+                    if ( player.getScoreboard() == board ) {
+                        player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+                    }
 
-					milliList.clear();
-					moneyList.clear();
-					return;
-				} else {
-					obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-				}
+                    milliList.clear();
+                    moneyList.clear();
+                    return;
+                } else {
+                    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+                }
 
-				update();
-			}
-		}.runTaskTimer(plugin, 0, 5);
-	}
+                update();
+            }
+        }.runTaskTimer(plugin, 0, 5);
+    }
 
-	public void disableTask() {
-		if (task != null) {
-			task.cancel();
-		}
-	}
+    public void disableTask() {
+        if ( task != null ) {
+            task.cancel();
+        }
+    }
 }

@@ -15,122 +15,122 @@ import com.google.common.base.Strings;
 
 public class LogWriter {
 
-	private File logFile;
+    private final File logFile;
 
-	public LogWriter(File logFile) {
-		this.logFile = logFile;
+    public LogWriter(File logFile) {
+        this.logFile = logFile;
 
-		if (!this.logFile.exists()) {
-			try {
-				this.logFile.getParentFile().mkdirs();
-				this.logFile.createNewFile();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        if ( !this.logFile.exists() ) {
+            try {
+                this.logFile.getParentFile().mkdirs();
+                this.logFile.createNewFile();
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	public void writeLine(String data) {
+    public void writeLine(String data) {
 
-		if (!logFile.exists()) {
-			return;
-		}
+        if ( !logFile.exists() ) {
+            return;
+        }
 
-		String str = read();
-		str += getDate() + " " + data;
-		writeText(str);
-	}
+        String str = read();
+        str += getDate() + " " + data;
+        writeText(str);
+    }
 
-	public void writeError(Exception e) {
-		if (!logFile.exists()) {
-			return;
-		}
+    public void writeError(Exception e) {
+        if ( !logFile.exists() ) {
+            return;
+        }
 
-		String str = read();
+        String str = read();
 
-		String date = getDate();
+        String date = getDate();
 
-		StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-		for (StackTraceElement elem : e.getStackTrace()) {
-			builder.append(date + convertStringFromElem(elem));
-		}
+        for ( StackTraceElement elem : e.getStackTrace() ) {
+            builder.append(date + convertStringFromElem(elem));
+        }
 
-		StringBuilder builder2 = new StringBuilder();
+        StringBuilder builder2 = new StringBuilder();
 
-		int i = 0;
-		for (StackTraceElement elem : e.getCause().getStackTrace()) {
-			builder2.append(date + convertStringFromElem(elem));
+        int i = 0;
+        for ( StackTraceElement elem : e.getCause().getStackTrace() ) {
+            builder2.append(date + convertStringFromElem(elem));
 
-			i++;
+            i++;
 
-			if (elem.toString().startsWith("org.bukkit.")) {
-				break;
-			}
-		}
+            if ( elem.toString().startsWith("org.bukkit.") ) {
+                break;
+            }
+        }
 
-		builder2.append(ChatColor.GRAY + Strings.repeat(" ", 8) + "... " + (e.getCause().getStackTrace().length - i)
-				+ " more");
+        builder2.append(ChatColor.GRAY + Strings.repeat(" ", 8) + "... " + (e.getCause().getStackTrace().length - i)
+                + " more");
 
-		String txt = builder.toString();
-		txt += "Caused by: " + ChatColor.RED + e.getCause().toString() + getEndOfLine();
-		txt += builder2.toString();
+        String txt = builder.toString();
+        txt += "Caused by: " + ChatColor.RED + e.getCause().toString() + getEndOfLine();
+        txt += builder2.toString();
 
-		writeText(str + txt);
-	}
+        writeText(str + txt);
+    }
 
-	private String convertStringFromElem(StackTraceElement elem) {
-		StringBuilder builder = new StringBuilder(Strings.repeat(" ", 8) + "at ");
+    private String convertStringFromElem(StackTraceElement elem) {
+        StringBuilder builder = new StringBuilder(Strings.repeat(" ", 8) + "at ");
 
-		builder.append(elem.toString());
-		builder.append("\n");
+        builder.append(elem.toString());
+        builder.append("\n");
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 
-	private void writeText(String data) {
-		try {
-			FileWriter fw = new FileWriter(logFile);
-			fw.write(data);
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    private void writeText(String data) {
+        try {
+            FileWriter fw = new FileWriter(logFile);
+            fw.write(data);
+            fw.close();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+    }
 
-	private String read() {
-		String data = null;
-		StringBuilder sb = new StringBuilder();
+    private String read() {
+        String data = null;
+        StringBuilder sb = new StringBuilder();
 
-		String lineSeparator = System.getProperty("line.separator");
+        String lineSeparator = System.getProperty("line.separator");
 
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(logFile));
-			while ((data = br.readLine()) != null) {
-				sb.append(data);
-				sb.append(lineSeparator);
-			}
-			data = sb.toString();
-			br.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return data;
-	}
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(logFile));
+            while ( (data = br.readLine()) != null ) {
+                sb.append(data);
+                sb.append(lineSeparator);
+            }
+            data = sb.toString();
+            br.close();
+        } catch ( FileNotFoundException e ) {
+            e.printStackTrace();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        return data;
+    }
 
-	private String getDate() {
+    private String getDate() {
 
-		Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("[1] h/m/s S");
+        SimpleDateFormat sdf = new SimpleDateFormat("[1] h/m/s S");
 
-		sdf.applyPattern("[MM/dd HH:mm:ss]");
-		return sdf.format(cal.getTime());
-	}
+        sdf.applyPattern("[MM/dd HH:mm:ss]");
+        return sdf.format(cal.getTime());
+    }
 
-	public String getEndOfLine() {
-		return "\r\n";
-	}
+    public String getEndOfLine() {
+        return "\r\n";
+    }
 }

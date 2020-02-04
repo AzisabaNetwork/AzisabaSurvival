@@ -11,25 +11,25 @@ import jp.azisaba.main.survival.AzisabaSurvival;
 
 public class JoinWorldDetector implements Listener {
 
-	private AzisabaSurvival plugin;
+    private final AzisabaSurvival plugin;
 
-	public JoinWorldDetector(AzisabaSurvival plugin) {
-		this.plugin = plugin;
-	}
+    public JoinWorldDetector(AzisabaSurvival plugin) {
+        this.plugin = plugin;
+    }
 
-	@EventHandler
-	public void onJoinWorld(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
+    @EventHandler
+    public void onJoinWorld(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
 
-		World main = Bukkit.getWorld("main");
+        World main = Bukkit.getWorld("main");
 
-		if (main == null) {
-			plugin.getLogger().warning("World 'main' not exist.");
-			return;
-		}
+        if ( main == null ) {
+            plugin.getLogger().warning("World 'main' not exist.");
+            return;
+        }
 
-		if (p.getLocation().getWorld().getName().equals("world")) {
-			p.teleport(main.getSpawnLocation());
-		}
-	}
+        if ( p.getLocation().getWorld().getName().equals("world") ) {
+            p.teleport(main.getSpawnLocation());
+        }
+    }
 }

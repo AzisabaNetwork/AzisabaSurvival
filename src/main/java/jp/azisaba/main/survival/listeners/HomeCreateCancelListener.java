@@ -15,116 +15,117 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
-import jp.azisaba.main.survival.AzisabaSurvival;
 import net.md_5.bungee.api.ChatColor;
+
+import jp.azisaba.main.survival.AzisabaSurvival;
 
 public class HomeCreateCancelListener implements Listener {
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onReceiveHomeCommand(PlayerCommandPreprocessEvent e) {
-		Player p = e.getPlayer();
+    @EventHandler(priority = EventPriority.LOW)
+    public void onReceiveHomeCommand(PlayerCommandPreprocessEvent e) {
+        Player p = e.getPlayer();
 
-		PluginCommand cmd = Bukkit.getPluginCommand("sethome");
+        PluginCommand cmd = Bukkit.getPluginCommand("sethome");
 
-		if (cmd == null) {
-			return;
-		}
+        if ( cmd == null ) {
+            return;
+        }
 
-		String label = e.getMessage().split(" ")[0].substring(1).toLowerCase();
+        String label = e.getMessage().split(" ")[0].substring(1).toLowerCase();
 
-		if (!cmd.getName().equalsIgnoreCase(label) && !cmd.getAliases().contains(label)) {
-			return;
-		}
+        if ( !cmd.getName().equalsIgnoreCase(label) && !cmd.getAliases().contains(label) ) {
+            return;
+        }
 
-		String homeName;
-		String[] strs = e.getMessage().split(" ");
-		if (strs.length <= 1) {
-			homeName = getHomeNameIfOne(p);
+        String homeName;
+        String[] strs = e.getMessage().split(" ");
+        if ( strs.length <= 1 ) {
+            homeName = getHomeNameIfOne(p);
 
-			if (homeName == null) {
-				homeName = "home";
-			}
+            if ( homeName == null ) {
+                homeName = "home";
+            }
 
-		} else if (strs.length == 2) {
-			homeName = strs[1];
-		} else {
-			homeName = strs[2];
-		}
+        } else if ( strs.length == 2 ) {
+            homeName = strs[1];
+        } else {
+            homeName = strs[2];
+        }
 
-		boolean cancel = onRegisterHome(p, homeName);
+        boolean cancel = onRegisterHome(p, homeName);
 
-		if (cancel) {
-			p.sendMessage(ChatColor.RED + "このワールドに設定できるホーム数を超えてしまいます。 (" + ChatColor.YELLOW + ""
-					+ AzisabaSurvival.getSurvivalConfig().getHomeLimit(p.getWorld()) + "個以下" + ChatColor.RED + ")");
-			e.setCancelled(true);
-		}
-	}
+        if ( cancel ) {
+            p.sendMessage(ChatColor.RED + "このワールドに設定できるホーム数を超えてしまいます。 (" + ChatColor.YELLOW + ""
+                    + AzisabaSurvival.getSurvivalConfig().getHomeLimit(p.getWorld()) + "個以下" + ChatColor.RED + ")");
+            e.setCancelled(true);
+        }
+    }
 
-	private boolean onRegisterHome(Player p, String homeName) {
-		Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+    private boolean onRegisterHome(Player p, String homeName) {
+        Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 
-		if (ess == null) {
-			return false;
-		}
+        if ( ess == null ) {
+            return false;
+        }
 
-		User user = ess.getUser(p.getUniqueId());
+        User user = ess.getUser(p.getUniqueId());
 
-		try {
-			if (user.getHome(homeName) != null && user.getHome(homeName).getWorld() == p.getWorld()) {
-				return false;
-			}
-		} catch (Exception e1) {
-			// none
-		}
+        try {
+            if ( user.getHome(homeName) != null && user.getHome(homeName).getWorld() == p.getWorld() ) {
+                return false;
+            }
+        } catch ( Exception e1 ) {
+            // none
+        }
 
-		HashMap<World, Integer> homes = new HashMap<World, Integer>();
+        HashMap<World, Integer> homes = new HashMap<>();
 
-		for (String home : user.getHomes()) {
+        for ( String home : user.getHomes() ) {
 
-			Location loc;
+            Location loc;
 
-			try {
-				loc = user.getHome(home);
-			} catch (Exception e) {
-				continue;
-			}
+            try {
+                loc = user.getHome(home);
+            } catch ( Exception e ) {
+                continue;
+            }
 
-			if (loc == null || loc.getWorld() == null) {
-				continue;
-			}
+            if ( loc == null || loc.getWorld() == null ) {
+                continue;
+            }
 
-			if (homes.containsKey(loc.getWorld())) {
-				homes.put(loc.getWorld(), homes.get(loc.getWorld()) + 1);
-			} else {
-				homes.put(loc.getWorld(), 1);
-			}
-		}
+            if ( homes.containsKey(loc.getWorld()) ) {
+                homes.put(loc.getWorld(), homes.get(loc.getWorld()) + 1);
+            } else {
+                homes.put(loc.getWorld(), 1);
+            }
+        }
 
-		int current = 0;
-		if (homes.containsKey(p.getWorld())) {
-			current = homes.get(p.getWorld());
-		}
+        int current = 0;
+        if ( homes.containsKey(p.getWorld()) ) {
+            current = homes.get(p.getWorld());
+        }
 
-		if (current >= AzisabaSurvival.getSurvivalConfig().getHomeLimit(p.getWorld())) {
-			return true;
-		}
+        if ( current >= AzisabaSurvival.getSurvivalConfig().getHomeLimit(p.getWorld()) ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private String getHomeNameIfOne(Player p) {
-		Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+    private String getHomeNameIfOne(Player p) {
+        Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 
-		if (ess == null) {
-			return null;
-		}
+        if ( ess == null ) {
+            return null;
+        }
 
-		User user = ess.getUser(p.getUniqueId());
+        User user = ess.getUser(p.getUniqueId());
 
-		if (user.getHomes().size() == 1) {
-			return user.getHomes().get(0);
-		}
+        if ( user.getHomes().size() == 1 ) {
+            return user.getHomes().get(0);
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

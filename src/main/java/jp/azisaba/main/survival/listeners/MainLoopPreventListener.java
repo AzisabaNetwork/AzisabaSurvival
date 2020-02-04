@@ -10,25 +10,25 @@ import jp.azisaba.main.survival.AzisabaSurvival;
 
 public class MainLoopPreventListener implements Listener {
 
-	private AzisabaSurvival plugin;
+    private final AzisabaSurvival plugin;
 
-	public MainLoopPreventListener(AzisabaSurvival plugin) {
-		this.plugin = plugin;
-	}
+    public MainLoopPreventListener(AzisabaSurvival plugin) {
+        this.plugin = plugin;
+    }
 
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		Location loc = p.getLocation();
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        Location loc = p.getLocation();
 
-		if (loc.getX() >= -3 && loc.getX() <= 3 && loc.getZ() >= -3 && loc.getZ() <= 3 && loc.getY() >= 58
-				&& loc.getY() <= 66) {
+        if ( loc.getX() >= -3 && loc.getX() <= 3 && loc.getZ() >= -3 && loc.getZ() <= 3 && loc.getY() >= 58
+                && loc.getY() <= 66 ) {
 
-			Location spawn = p.getWorld().getSpawnLocation();
+            Location spawn = p.getWorld().getSpawnLocation();
 
-			p.teleport(spawn);
+            p.teleport(spawn);
 
-			plugin.getLogger().info(p.getName() + " のロビーループを阻止 (中央にTP)");
-		}
-	}
+            plugin.getLogger().info(p.getName() + " のロビーループを阻止 (中央にTP)");
+        }
+    }
 }

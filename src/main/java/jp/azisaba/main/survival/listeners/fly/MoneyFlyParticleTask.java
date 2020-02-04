@@ -17,48 +17,50 @@ import jp.azisaba.main.survival.AzisabaSurvival;
 
 public class MoneyFlyParticleTask {
 
-	private static BukkitTask task;
+    private static BukkitTask task;
 
-	public static void runTask(AzisabaSurvival plugin) {
-		task = new BukkitRunnable() {
-			public void run() {
-				List<UUID> plist = MoneyFlyManager.getEnableFlyPlayerUUIDs();
+    public static void runTask(AzisabaSurvival plugin) {
+        task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                List<UUID> plist = MoneyFlyManager.getEnableFlyPlayerUUIDs();
 
-				if (plist.size() <= 0) {
-					return;
-				}
+                if ( plist.size() <= 0 ) {
+                    return;
+                }
 
-				for (UUID uuid : plist) {
-					Player p = Bukkit.getPlayer(uuid);
+                for ( UUID uuid : plist ) {
+                    Player p = Bukkit.getPlayer(uuid);
 
-					if (p == null || !p.isFlying()
-							|| (p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR))
-						continue;
+                    if ( p == null || !p.isFlying()
+                            || p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR ) {
+                        continue;
+                    }
 
-					List<Player> nearPlayerList = new ArrayList<>();
-					for (Entity ent : p.getWorld().getNearbyEntities(p.getLocation(), 60, 60, 60)) {
-						if (ent instanceof Player && ((Player) ent) != p) {
-							nearPlayerList.add((Player) ent);
-						}
-					}
+                    List<Player> nearPlayerList = new ArrayList<>();
+                    for ( Entity ent : p.getWorld().getNearbyEntities(p.getLocation(), 60, 60, 60) ) {
+                        if ( ent instanceof Player && (Player) ent != p ) {
+                            nearPlayerList.add((Player) ent);
+                        }
+                    }
 
-					if (nearPlayerList.size() <= 0) {
-						return;
-					}
+                    if ( nearPlayerList.size() <= 0 ) {
+                        return;
+                    }
 
-					Location spawn = p.getLocation().clone();
-					for (Player near : nearPlayerList) {
-						near.spawnParticle(Particle.CLOUD, spawn, 4, 0, 0, 0, 0.02);
-					}
-				}
-			}
-		}.runTaskTimer(plugin, 0, 2);
-	}
+                    Location spawn = p.getLocation().clone();
+                    for ( Player near : nearPlayerList ) {
+                        near.spawnParticle(Particle.CLOUD, spawn, 4, 0, 0, 0, 0.02);
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0, 2);
+    }
 
-	public static void stopTask() {
-		if (task != null) {
-			task.cancel();
-			task = null;
-		}
-	}
+    public static void stopTask() {
+        if ( task != null ) {
+            task.cancel();
+            task = null;
+        }
+    }
 }
