@@ -9,6 +9,9 @@ import org.bukkit.scoreboard.DisplaySlot;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jp.azisaba.main.survival.commands.AzisabaSurvivalCommand;
 import jp.azisaba.main.survival.commands.VoteCommand;
 import jp.azisaba.main.survival.listeners.EarnMoneyListener;
@@ -29,8 +32,11 @@ import jp.azisaba.main.survival.listeners.fly.MoneyFlyParticleTask;
 public class AzisabaSurvival extends JavaPlugin {
 
     private static AzisabaSurvivalConfig config;
-    private static Economy econ = null;
+    @Getter
+    private static Economy economy = null;
 
+    @Getter
+    @Setter
     private static boolean enableEarnMoney = true;
 
     @Override
@@ -126,22 +132,10 @@ public class AzisabaSurvival extends JavaPlugin {
             if ( rsp == null ) {
                 return false;
             }
-            econ = rsp.getProvider();
-            return econ != null;
+            economy = rsp.getProvider();
+            return economy != null;
         } catch ( Exception e ) {
             return false;
         }
-    }
-
-    public static Economy getEconomy() {
-        return econ;
-    }
-
-    public static boolean isEnableEarnMoney() {
-        return enableEarnMoney;
-    }
-
-    public static void setEnableEarnMoney(boolean enable) {
-        enableEarnMoney = enable;
     }
 }

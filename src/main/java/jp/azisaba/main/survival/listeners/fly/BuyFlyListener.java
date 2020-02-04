@@ -1,6 +1,5 @@
 package jp.azisaba.main.survival.listeners.fly;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -17,18 +16,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
-import jp.azisaba.main.homos.database.PlayerDataManager;
-import jp.azisaba.main.homos.database.TicketManager;
+import lombok.RequiredArgsConstructor;
+
 import jp.azisaba.main.survival.AzisabaSurvival;
 
+@RequiredArgsConstructor
 public class BuyFlyListener implements Listener {
 
     private final AzisabaSurvival plugin;
-
-    public BuyFlyListener(AzisabaSurvival plugin) {
-        this.plugin = plugin;
-    }
 
     private final HashMap<Player, Long> lastBought = new HashMap<>();
 
@@ -56,7 +54,7 @@ public class BuyFlyListener implements Listener {
 
         final int value;
         try {
-            value = Integer.parseInt(ChatColor.stripColor(line2).replace("チケット", ""));
+            value = Integer.parseInt(ChatColor.stripColor(line2).replace("円", ""));
         } catch ( Exception ex ) {
             return;
         }
@@ -73,7 +71,7 @@ public class BuyFlyListener implements Listener {
             return;
         }
 
-        if ( lastBought.containsKey(p) && lastBought.get(p) + 1000 * 1 > System.currentTimeMillis() ) {
+        if ( lastBought.getOrDefault(p, 0L) + 1000 > System.currentTimeMillis() ) {
             return;
         }
 
@@ -83,24 +81,28 @@ public class BuyFlyListener implements Listener {
             @Override
             public void run() {
 
-                BigInteger tickets = PlayerDataManager.getPlayerData(p).getTickets();
-
-                if ( tickets.compareTo(BigInteger.valueOf(value)) < 0 ) {
-                    p.sendMessage(ChatColor.RED + "十分なチケットがありません。");
+                Economy econ = AzisabaSurvival.getEconomy();
+                if ( econ == null ) {
+                    p.sendMessage(ChatColor.RED + "現在このアイテムを購入することができません。運営に問い合わせてください (エラー: Economy Not Found)");
                     return;
                 }
 
-                boolean success = TicketManager.removeTicket(p, BigInteger.valueOf(value));
+                if ( econ.getBalance(p) < value ) {
+                    p.sendMessage(ChatColor.RED + "所持金が足りません！購入するためには" + ChatColor.YELLOW + "" + value + "円" + ChatColor.RED + "必要です！");
+                    return;
+                }
 
-                if ( !success ) {
-                    p.sendMessage(ChatColor.RED + "購入に失敗しました。");
+                EconomyResponse res = econ.withdrawPlayer(p, value);
+
+                if ( !res.transactionSuccess() ) {
+                    p.sendMessage(ChatColor.RED + "購入に失敗しました (エラー: " + res.errorMessage + ")");
                     return;
                 }
 
                 MoneyFlyManager.addTenMinutes(p);
 
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1, 1);
-                p.sendMessage(ChatColor.YELLOW + "10分" + ChatColor.GREEN + "のFlyを購入しました！ (" + value + "チケット)");
+                p.sendMessage(ChatColor.YELLOW + "10分" + ChatColor.GREEN + "のFlyを購入しました！ (" + value + "円)");
 
                 Location loc = b.getLocation();
                 Bukkit.getLogger().info("[AS:MoneyFly] " + p.getName() + "がFlyを購入しました。 (" + loc.getBlockX() + ","

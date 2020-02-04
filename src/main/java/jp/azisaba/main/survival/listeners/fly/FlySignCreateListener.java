@@ -37,7 +37,7 @@ public class FlySignCreateListener implements Listener {
             return;
         }
 
-        int value = 500; // チケット
+        int value = 500; // 値段
 
         if ( !line2.equals("") ) {
             try {
@@ -60,7 +60,7 @@ public class FlySignCreateListener implements Listener {
         }
 
         e.setLine(0, MoneyFlyManager.getFormattedSignLine1());
-        e.setLine(1, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "" + value + "チケット");
+        e.setLine(1, ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "" + value + "円");
         e.setLine(2, "");
         e.setLine(3, ChatColor.RED + "" + ChatColor.BOLD + "右クリックで購入");
 
