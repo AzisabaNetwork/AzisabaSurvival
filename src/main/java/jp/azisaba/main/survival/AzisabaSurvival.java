@@ -10,11 +10,9 @@ import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import jp.azisaba.main.survival.commands.AzisabaSurvivalCommand;
 import jp.azisaba.main.survival.commands.VoteCommand;
-import jp.azisaba.main.survival.listeners.EarnMoneyListener;
 import jp.azisaba.main.survival.listeners.FlyKickTeleportListener;
 import jp.azisaba.main.survival.listeners.HomeCreateCancelListener;
 import jp.azisaba.main.survival.listeners.JoinWorldDetector;
@@ -35,10 +33,6 @@ public class AzisabaSurvival extends JavaPlugin {
     @Getter
     private static Economy economy = null;
 
-    @Getter
-    @Setter
-    private static boolean enableEarnMoney = true;
-
     @Override
     public void onEnable() {
 
@@ -47,7 +41,6 @@ public class AzisabaSurvival extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new WitherCancelListener(), this);
         Bukkit.getPluginManager().registerEvents(new HomeCreateCancelListener(), this);
-        Bukkit.getPluginManager().registerEvents(new EarnMoneyListener(this), this);
         Bukkit.getPluginManager().registerEvents(new VoteListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MainLoopPreventListener(this), this);
         Bukkit.getPluginManager().registerEvents(new RandomTeleportGateListener(this), this);
@@ -73,7 +66,6 @@ public class AzisabaSurvival extends JavaPlugin {
 
         if ( !setupEconomy() ) {
             getLogger().severe("Vault と連携できませんでした。お金追加機能を無効化します。");
-            enableEarnMoney = false;
         } else {
             getLogger().info("Vault と連携しました。");
         }
