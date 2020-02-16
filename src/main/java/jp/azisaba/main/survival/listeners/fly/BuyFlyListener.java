@@ -1,6 +1,7 @@
 package jp.azisaba.main.survival.listeners.fly;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -93,9 +94,13 @@ public class BuyFlyListener implements Listener {
                 }
 
                 EconomyResponse res = econ.withdrawPlayer(p, value);
-
                 if ( !res.transactionSuccess() ) {
                     p.sendMessage(ChatColor.RED + "購入に失敗しました (エラー: " + res.errorMessage + ")");
+                    return;
+                }
+                EconomyResponse res2 = econ.depositPlayer(Bukkit.getOfflinePlayer(UUID.fromString("58becc44-c5b7-420f-8800-15ba88820973")), value);
+                if ( !res2.transactionSuccess() ) {
+                    p.sendMessage(ChatColor.RED + "購入に失敗しました (エラー(dep): " + res.errorMessage + ")");
                     return;
                 }
 
