@@ -1,14 +1,17 @@
 package jp.azisaba.main.survival.listeners;
 
 import java.io.File;
-import java.math.BigInteger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.google.common.base.Strings;
 import com.vexsoftware.votifier.model.Vote;
@@ -16,21 +19,17 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 
 import net.md_5.bungee.api.ChatColor;
 
-import jp.azisaba.main.homos.classes.PlayerData;
-import jp.azisaba.main.homos.database.PlayerDataManager;
-import jp.azisaba.main.homos.database.TicketManager;
+import lombok.RequiredArgsConstructor;
+
 import jp.azisaba.main.survival.AzisabaSurvival;
 import jp.azisaba.main.survival.util.LogWriter;
 import me.rayzr522.jsonmessage.JSONMessage;
 
+@RequiredArgsConstructor
 public class VoteListener implements Listener {
 
     private final AzisabaSurvival plugin;
     private final String VOTE_URL = "https://minecraft.jp/servers/azisaba.net";
-
-    public VoteListener(AzisabaSurvival plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVotifierEvent(VotifierEvent event) {
@@ -38,38 +37,28 @@ public class VoteListener implements Listener {
 
         String voter = vote.getUsername();
 
-        try {
-            addTickets(voter);
-        } catch ( NullPointerException e ) {
-
-            if ( e == null || e.getMessage() == null ) {
-                return;
-            }
-
-            if ( voter.equals("Votifier Test") || e.getMessage().equals("user not found.") ) {
-                return;
-            }
-
-            errorTracker(vote, e);
-            return;
-        } catch ( Exception e ) {
-
-            if ( voter.equals("Votifier Test") ) {
-                return;
-            }
-
-            errorTracker(vote, e);
+        if ( voter.equals("Votifier Test") ) {
             return;
         }
 
-        JSONMessage msg = JSONMessage
-                .create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN
-                        + voter + ChatColor.GRAY + "さんがJMSで投票して" + AzisabaSurvival.getSurvivalConfig().voteTickets
-                        + "チケットをゲットしました！");
+        if ( Bukkit.getPlayer(voter) != null ) {
+            Player p = Bukkit.getPlayer(voter);
+            p.getInventory().addItem(new ItemStack(Material.DIAMOND, 10));
+            p.sendMessage(ChatColor.GREEN + "投票報酬として " + ChatColor.AQUA + "ダイヤモンド10個 " + ChatColor.GREEN + "を付与しました！");
 
-        msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
-
-        msg.send(Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]));
+            JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + voter + ChatColor.GRAY + "さんがJMSで投票して" + ChatColor.AQUA + "ダイヤモンド" + ChatColor.GRAY + "をゲットしました！");
+            msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
+            msg.send(Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]));
+            return;
+        } else {
+            try {
+                YamlConfiguration conf = plugin.getVoteConfig();
+                conf.set(voter, conf.getInt(voter, 0) + 1);
+            } catch ( Exception e ) {
+                errorTracker(vote, e);
+                return;
+            }
+        }
 
         Bukkit.getOnlinePlayers().forEach(player -> {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -78,18 +67,34 @@ public class VoteListener implements Listener {
         plugin.getLogger().info(voter + " が投票しました。");
     }
 
-    private boolean addTickets(String name) {
+    @EventHandler
+    public void join(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        YamlConfiguration conf = plugin.getVoteConfig();
 
-        PlayerData data = PlayerDataManager.getPlayerData(name);
+        int amount = conf.getInt(p.getName(), 0) * 10;
+        int amountBackup = amount;
 
-        if ( data == null ) {
-            throw new NullPointerException("user not found.");
+        if ( amount > 0 ) {
+            conf.set(p.getName(), null);
+            while ( amount > 0 ) {
+                int am2 = amount;
+                if ( am2 > 64 ) {
+                    am2 = 64;
+                }
+
+                ItemStack diamond = new ItemStack(Material.DIAMOND, am2);
+                p.getInventory().addItem(diamond);
+
+                amount -= am2;
+            }
+
+            p.sendMessage(ChatColor.GREEN + "投票報酬として " + ChatColor.AQUA + "ダイヤモンド" + amountBackup + "個 " + ChatColor.GREEN + "を付与しました！");
+
+            JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + p.getName() + ChatColor.GRAY + "さんがJMSで投票して" + ChatColor.AQUA + "ダイヤモンド" + ChatColor.GRAY + "をゲットしました！");
+            msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
+            msg.send(Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]));
         }
-
-        boolean success = TicketManager.addTicket(data.getUuid(),
-                BigInteger.valueOf(AzisabaSurvival.getSurvivalConfig().voteTickets));
-
-        return success;
     }
 
     private void errorTracker(Vote data, Exception e) {

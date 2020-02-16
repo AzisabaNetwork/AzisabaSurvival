@@ -1,6 +1,10 @@
 package jp.azisaba.main.survival;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,8 +37,13 @@ public class AzisabaSurvival extends JavaPlugin {
     @Getter
     private static Economy economy = null;
 
+    @Getter
+    private YamlConfiguration voteConfig = null;
+
     @Override
     public void onEnable() {
+
+        voteConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "votes.yml"));
 
         AzisabaSurvival.config = new AzisabaSurvivalConfig(this);
         AzisabaSurvival.config.loadConfig();
@@ -77,6 +86,12 @@ public class AzisabaSurvival extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        try {
+            voteConfig.save(new File(getDataFolder(), "votes.yml"));
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
 
         MoneyFlyManager.clearBossBars();
         MoneyFlyManager.saveData();
