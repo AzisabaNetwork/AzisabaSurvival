@@ -57,7 +57,7 @@ public class AzisabaSurvival extends JavaPlugin {
         meta.addEnchant(Enchantment.DURABILITY, 1, false);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(ChatColor.GOLD + "金券");
-        meta.setLore(Arrays.asList("&a換金できます！"));
+        meta.setLore(Arrays.asList(ChatColor.GREEN + "換金できます！"));
         voteRewardPaper.setItemMeta(meta);
 
         voteConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "votes.yml"));
