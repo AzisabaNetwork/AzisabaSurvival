@@ -3,7 +3,6 @@ package jp.azisaba.main.survival.listeners;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -40,13 +39,14 @@ public class VoteListener implements Listener {
         if ( voter.equals("Votifier Test") ) {
             return;
         }
+        String displayName = plugin.getVoteRewardPaper().getItemMeta().getDisplayName();
 
         if ( Bukkit.getPlayer(voter) != null ) {
             Player p = Bukkit.getPlayer(voter);
-            p.getInventory().addItem(new ItemStack(Material.DIAMOND, 10));
-            p.sendMessage(ChatColor.GREEN + "投票報酬として " + ChatColor.AQUA + "ダイヤモンド10個 " + ChatColor.GREEN + "を付与しました！");
+            p.getInventory().addItem(plugin.getVoteRewardPaper().clone());
+            p.sendMessage(ChatColor.GREEN + "投票報酬として " + displayName + ChatColor.GREEN + " を付与しました！");
 
-            JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + voter + ChatColor.GRAY + "さんがJMSで投票して" + ChatColor.AQUA + "ダイヤモンド" + ChatColor.GRAY + "をゲットしました！");
+            JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + voter + ChatColor.GRAY + "さんがJMSで投票して" + displayName + ChatColor.GRAY + "をゲットしました！");
             msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
             msg.send(Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]));
             return;
@@ -76,6 +76,9 @@ public class VoteListener implements Listener {
         int amountBackup = amount;
 
         if ( amount > 0 ) {
+
+            String displayName = plugin.getVoteRewardPaper().getItemMeta().getDisplayName();
+
             conf.set(p.getName(), null);
             while ( amount > 0 ) {
                 int am2 = amount;
@@ -83,15 +86,16 @@ public class VoteListener implements Listener {
                     am2 = 64;
                 }
 
-                ItemStack diamond = new ItemStack(Material.DIAMOND, am2);
-                p.getInventory().addItem(diamond);
+                ItemStack paper = plugin.getVoteRewardPaper().clone();
+                paper.setAmount(am2);
+                p.getInventory().addItem(paper);
 
                 amount -= am2;
             }
 
-            p.sendMessage(ChatColor.GREEN + "投票報酬として " + ChatColor.AQUA + "ダイヤモンド" + amountBackup + "個 " + ChatColor.GREEN + "を付与しました！");
+            p.sendMessage(ChatColor.GREEN + "投票報酬として " + displayName + " " + ChatColor.AQUA + amountBackup + "個 " + ChatColor.GREEN + "を付与しました！");
 
-            JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + p.getName() + ChatColor.GRAY + "さんがJMSで投票して" + ChatColor.AQUA + "ダイヤモンド" + ChatColor.GRAY + "をゲットしました！");
+            JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + p.getName() + ChatColor.GRAY + "さんがJMSで投票して" + displayName + ChatColor.GRAY + "をゲットしました！");
             msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
             msg.send(Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]));
         }

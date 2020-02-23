@@ -2,10 +2,16 @@ package jp.azisaba.main.survival;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -40,8 +46,19 @@ public class AzisabaSurvival extends JavaPlugin {
     @Getter
     private YamlConfiguration voteConfig = null;
 
+    @Getter
+    private ItemStack voteRewardPaper;
+
     @Override
     public void onEnable() {
+
+        voteRewardPaper = new ItemStack(Material.PAPER);
+        ItemMeta meta = voteRewardPaper.getItemMeta();
+        meta.addEnchant(Enchantment.DURABILITY, 1, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.setDisplayName(ChatColor.GOLD + "金券");
+        meta.setLore(Arrays.asList("&a換金できます！"));
+        voteRewardPaper.setItemMeta(meta);
 
         voteConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "votes.yml"));
 
