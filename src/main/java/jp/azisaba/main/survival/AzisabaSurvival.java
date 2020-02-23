@@ -80,7 +80,7 @@ public class AzisabaSurvival extends JavaPlugin {
         Bukkit.getPluginCommand("azisabasurvival").setExecutor(new AzisabaSurvivalCommand(this));
         Bukkit.getPluginCommand("azisabasurvival")
                 .setPermissionMessage(config.chatPrefix + ChatColor.RED + "あなたにはこのコマンドを実行する権限がありません！");
-        Bukkit.getPluginCommand("vote").setExecutor(new VoteCommand());
+        Bukkit.getPluginCommand("vote").setExecutor(new VoteCommand(this));
         Bukkit.getPluginCommand("vote")
                 .setPermissionMessage(config.chatPrefix + ChatColor.RED + "コマンドを実行する権限がないようです... バグ報告に投げてください。");
 

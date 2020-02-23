@@ -21,6 +21,8 @@ permissions:
     default: true
   azisabasurvival.command.vote:
     default: true
+  azisabasurvival.command.vote.getitem:
+    default: op
   azisabasurvival.moneyfly.create:
     default: op
   azisabasurvival.moneyfly.buy:

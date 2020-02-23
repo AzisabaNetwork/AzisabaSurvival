@@ -5,12 +5,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
 
+import lombok.RequiredArgsConstructor;
+
+import jp.azisaba.main.survival.AzisabaSurvival;
 import me.rayzr522.jsonmessage.JSONMessage;
 
+@RequiredArgsConstructor
 public class VoteCommand implements CommandExecutor {
+
+    private final AzisabaSurvival plugin;
 
     private final String VOTE_URL = "https://minecraft.jp/servers/azisaba.net";
 
@@ -20,6 +27,14 @@ public class VoteCommand implements CommandExecutor {
         if ( sender instanceof Player ) {
 
             Player p = (Player) sender;
+
+            if ( args.length > 0 && args[1].equalsIgnoreCase("voteitem") && p.hasPermission("azisabasurvival.command.vote.getitem") ) {
+                ItemStack item = plugin.getVoteRewardPaper().clone();
+                String name = item.getItemMeta().getDisplayName();
+                p.getInventory().addItem(item);
+                p.sendMessage(name + ChatColor.GRAY + "を付与しました。");
+                return true;
+            }
 
             JSONMessage msg = JSONMessage.create();
 
