@@ -28,7 +28,7 @@ public class VoteCommand implements CommandExecutor {
 
             Player p = (Player) sender;
 
-            if ( args.length > 0 && args[1].equalsIgnoreCase("voteitem") && p.hasPermission("azisabasurvival.command.vote.getitem") ) {
+            if ( args.length > 0 && args[0].equalsIgnoreCase("voteitem") && p.hasPermission("azisabasurvival.command.vote.getitem") ) {
                 ItemStack item = plugin.getVoteRewardPaper().clone();
                 String name = item.getItemMeta().getDisplayName();
                 p.getInventory().addItem(item);
