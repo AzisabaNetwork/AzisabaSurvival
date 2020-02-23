@@ -1,5 +1,6 @@
 package jp.azisaba.main.survival.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,19 +24,41 @@ public class VoteCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if ( args.length <= 0 || !sender.hasPermission("azisabasurvival.command.vote.give") ) {
+            normalExecute(sender);
+            return true;
+        }
 
-        if ( sender instanceof Player ) {
+        if ( args[0].equalsIgnoreCase("give") ) {
+            Player target = null;
+            if ( args.length <= 1 ) {
+                if ( !(sender instanceof Player) ) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /" + label + " give <Player>");
+                    return true;
+                }
+                target = (Player) sender;
+            } else {
+                target = Bukkit.getPlayer(args[1]);
+            }
 
-            Player p = (Player) sender;
-
-            if ( args.length > 0 && args[0].equalsIgnoreCase("voteitem") && p.hasPermission("azisabasurvival.command.vote.getitem") ) {
-                ItemStack item = plugin.getVoteRewardPaper().clone();
-                String name = item.getItemMeta().getDisplayName();
-                p.getInventory().addItem(item);
-                p.sendMessage(name + ChatColor.GRAY + "を付与しました。");
+            if ( target == null ) {
+                sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりません！");
                 return true;
             }
 
+            ItemStack item = plugin.getVoteRewardPaper().clone();
+            String name = item.getItemMeta().getDisplayName();
+            target.getInventory().addItem(item);
+            sender.sendMessage(ChatColor.YELLOW + target.getName() + ChatColor.GRAY + "に" + name + ChatColor.GRAY + "を付与しました。");
+        } else {
+            normalExecute(sender);
+        }
+        return true;
+    }
+
+    private void normalExecute(CommandSender sender) {
+        if ( sender instanceof Player ) {
+            Player p = (Player) sender;
             JSONMessage msg = JSONMessage.create();
 
             msg.bar(24).newline();
@@ -46,10 +69,8 @@ public class VoteCommand implements CommandExecutor {
             msg.send(p);
 
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-            return true;
+        } else {
+            sender.sendMessage(ChatColor.RED + "運営は投票忘れたら処刑ってそれ一番言われてるから\n   ---> " + ChatColor.YELLOW + VOTE_URL);
         }
-
-        sender.sendMessage(ChatColor.RED + "運営は投票忘れたら処刑ってそれ一番言われてるから\n   ---> " + ChatColor.YELLOW + VOTE_URL);
-        return true;
     }
 }

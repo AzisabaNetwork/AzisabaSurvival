@@ -60,6 +60,10 @@ public class VoteListener implements Listener {
             }
         }
 
+        JSONMessage msg = JSONMessage.create(ChatColor.RED + "[" + ChatColor.YELLOW + "投票" + ChatColor.RED + "] " + ChatColor.GREEN + voter + ChatColor.GRAY + "さんがJMSで投票してくれました！");
+        msg.newline().then(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "ここから投票できます！").openURL(VOTE_URL);
+        msg.send(Bukkit.getOnlinePlayers().toArray(new Player[Bukkit.getOnlinePlayers().size()]));
+
         Bukkit.getOnlinePlayers().forEach(player -> {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         });
