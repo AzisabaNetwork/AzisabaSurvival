@@ -1,7 +1,13 @@
 package jp.azisaba.main.survival.listeners;
 
-import java.io.File;
-
+import com.google.common.base.Strings;
+import com.vexsoftware.votifier.model.Vote;
+import com.vexsoftware.votifier.model.VotifierEvent;
+import jp.azisaba.main.survival.AzisabaSurvival;
+import jp.azisaba.main.survival.util.LogWriter;
+import lombok.RequiredArgsConstructor;
+import me.rayzr522.jsonmessage.JSONMessage;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,17 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.base.Strings;
-import com.vexsoftware.votifier.model.Vote;
-import com.vexsoftware.votifier.model.VotifierEvent;
-
-import net.md_5.bungee.api.ChatColor;
-
-import lombok.RequiredArgsConstructor;
-
-import jp.azisaba.main.survival.AzisabaSurvival;
-import jp.azisaba.main.survival.util.LogWriter;
-import me.rayzr522.jsonmessage.JSONMessage;
+import java.io.File;
 
 @RequiredArgsConstructor
 public class VoteListener implements Listener {
@@ -36,12 +32,12 @@ public class VoteListener implements Listener {
 
         String voter = vote.getUsername();
 
-        if ( voter.equals("Votifier Test") ) {
+        if (voter.equals("Votifier Test")) {
             return;
         }
         String displayName = plugin.getVoteRewardPaper().getItemMeta().getDisplayName();
 
-        if ( Bukkit.getPlayer(voter) != null ) {
+        if (Bukkit.getPlayer(voter) != null) {
             Player p = Bukkit.getPlayer(voter);
             p.getInventory().addItem(plugin.getVoteRewardPaper().clone());
             p.sendMessage(ChatColor.GREEN + "投票報酬として " + displayName + ChatColor.GREEN + " を付与しました！");
@@ -54,7 +50,7 @@ public class VoteListener implements Listener {
             try {
                 YamlConfiguration conf = plugin.getVoteConfig();
                 conf.set(voter, conf.getInt(voter, 0) + 1);
-            } catch ( Exception e ) {
+            } catch (Exception e) {
                 errorTracker(vote, e);
                 return;
             }
@@ -76,17 +72,17 @@ public class VoteListener implements Listener {
         Player p = e.getPlayer();
         YamlConfiguration conf = plugin.getVoteConfig();
 
-        int amount = conf.getInt(p.getName(), 0) * 10;
+        int amount = conf.getInt(p.getName(), 0);
         int amountBackup = amount;
 
-        if ( amount > 0 ) {
+        if (amount > 0) {
 
             String displayName = plugin.getVoteRewardPaper().getItemMeta().getDisplayName();
 
             conf.set(p.getName(), null);
-            while ( amount > 0 ) {
+            while (amount > 0) {
                 int am2 = amount;
-                if ( am2 > 64 ) {
+                if (am2 > 64) {
                     am2 = 64;
                 }
 
