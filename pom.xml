@@ -77,10 +77,6 @@
       <id>sk89q-repo</id>
       <url>https://maven.sk89q.com/repo/</url>
     </repository>
-    <repository>
-      <id>azisaba-repo</id>
-      <url>https://mvn-repo.azisaba.net/</url>
-    </repository>
   </repositories>
 
   <dependencies>
@@ -114,10 +110,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.vexsoftware</groupId>
-      <artifactId>nuvotifier</artifactId>
-      <version>2.7.3</version>
-      <scope>provided</scope>
+      <groupId>com.github.NuVotifier</groupId>
+      <artifactId>NuVotifier</artifactId>
+      <version>2.7.2</version>
     </dependency>
     <dependency>
       <groupId>com.gmail.nossr50.mcMMO</groupId>
